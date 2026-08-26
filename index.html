@@ -32,8 +32,9 @@
   --c7:#B12704;  /* Andon Cord */
   --c8:#007185;  /* Gating */
   --c9:#C7511F;  /* Bin-Checks */
-  --c10:#1B5E20; /* WIS Reduction */
-  --c11:#B45309; /* Challenges */
+  --c10:#8E24AA; /* HRV — Customer Returns & Electronic Item Verification */
+  --c11:#1B5E20; /* WIS Reduction */
+  --c12:#B45309; /* Challenges */
 }
 
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
@@ -213,11 +214,33 @@ a{color:inherit;}
 
 .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;}
 
-/* ---- DATA TABLE ---- */
-.dt-wrap{margin-bottom:38px;background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:0 6px 16px rgba(15,17,17,.05);}
-.dt-head{padding:14px 18px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;}
+/* ---- COLOR LEGEND ---- */
+.dt-legend{display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin:-8px 0 20px;padding:11px 16px;
+  background:#F5F7F8;border-radius:10px;font-size:.74rem;color:var(--muted);}
+.dt-legend b{color:var(--navy);font-weight:700;margin-right:2px;}
+.dt-legend .lg-item{display:flex;align-items:center;gap:6px;}
+.dt-legend .lg-swatch{width:12px;height:12px;border-radius:3px;display:inline-block;flex-shrink:0;}
+.dt-legend .lg-swatch.good{background:rgba(6,125,98,.22);border:1.5px solid #067D62;}
+.dt-legend .lg-swatch.warn{background:rgba(255,153,0,.25);border:1.5px solid #FF9900;}
+.dt-legend .lg-swatch.bad{background:rgba(209,50,18,.2);border:1.5px solid #D13212;}
+
+/* ---- DATA TABLE (collapsible) ---- */
+.dt-wrap{margin-bottom:20px;background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:0 6px 16px rgba(15,17,17,.05);}
+.dt-head{padding:14px 18px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;
+  gap:10px;flex-wrap:wrap;width:100%;text-align:left;cursor:pointer;background:#fff;transition:background .2s ease;}
+.dt-head:hover{background:#FAFBFC;}
+.dt-head-txt{display:flex;flex-direction:column;gap:3px;}
 .dt-head b{font-family:'Poppins',sans-serif;font-size:.9rem;color:var(--navy);}
 .dt-head .dt-note{font-size:.72rem;color:var(--muted);}
+.dt-chev-wrap{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.dt-chev-lbl{font-size:.7rem;font-weight:700;color:var(--sc,var(--navy));}
+.dt-chev{width:22px;height:22px;border-radius:7px;background:var(--sc,var(--navy));color:#fff;
+  display:flex;align-items:center;justify-content:center;transition:transform .3s ease;}
+.dt-chev svg{width:12px;height:12px;}
+.dt-chev.open{transform:rotate(90deg);}
+.dt-body-wrap{display:grid;grid-template-rows:0fr;transition:grid-template-rows .4s cubic-bezier(.2,.85,.3,1);}
+.dt-body-wrap.open{grid-template-rows:1fr;}
+.dt-body-inner{overflow:hidden;min-height:0;}
 .dt-scroll{overflow-x:auto;}
 table.dt{border-collapse:collapse;width:100%;font-size:.8rem;min-width:max-content;}
 table.dt th{background:var(--navy);color:#fff;text-align:left;padding:9px 14px;font-weight:700;font-size:.7rem;letter-spacing:.02em;text-transform:uppercase;white-space:nowrap;position:sticky;top:0;}
@@ -232,6 +255,26 @@ td.tone-good{background:rgba(6,125,98,.15);color:#04543F;font-weight:700;}
 td.tone-warn{background:rgba(255,153,0,.18);color:#8A5300;font-weight:700;}
 td.tone-bad{background:rgba(209,50,18,.14);color:#8F1E0C;font-weight:700;}
 tr.dt-total td.tone-good,tr.dt-total td.tone-warn,tr.dt-total td.tone-bad{color:#fff;background:rgba(255,255,255,.18);}
+
+/* ---- MINI NAV + BACK TO TOP ---- */
+.mini-nav{position:fixed;top:50%;right:16px;transform:translateY(-50%);z-index:30;display:none;flex-direction:column;gap:10px;
+  background:#fff;border:1px solid var(--line);border-radius:16px;padding:12px 9px;box-shadow:0 10px 28px rgba(15,17,17,.14);
+  max-height:64vh;overflow-y:auto;}
+.mini-nav a{width:9px;height:9px;border-radius:50%;background:var(--line);display:block;position:relative;flex-shrink:0;
+  transition:all .2s ease;cursor:pointer;}
+.mini-nav a:hover{background:var(--sc,#999);transform:scale(1.5);}
+.mini-nav a .mn-label{position:absolute;right:20px;top:50%;transform:translateY(-50%);background:var(--navy);color:#fff;
+  padding:6px 12px;border-radius:8px;font-size:.72rem;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .15s ease;
+  box-shadow:0 6px 16px rgba(0,0,0,.2);}
+.mini-nav a:hover .mn-label{opacity:1;}
+@media (max-width:900px){ .mini-nav{display:none !important;} }
+
+.back-to-top{position:fixed;bottom:22px;right:18px;z-index:35;width:46px;height:46px;border-radius:50%;
+  background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 10px 24px rgba(19,25,33,.35);
+  opacity:0;pointer-events:none;transition:opacity .25s ease, transform .25s ease;transform:translateY(10px);}
+.back-to-top.show{opacity:1;pointer-events:auto;transform:translateY(0);}
+.back-to-top svg{width:18px;height:18px;}
+.back-to-top:hover{background:var(--orange);}
 
 /* ---- BAR CHART ---- */
 .chart-wrap{margin-bottom:38px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:20px 22px 8px;box-shadow:0 6px 16px rgba(15,17,17,.05);}
@@ -258,8 +301,16 @@ tr.dt-total td.tone-good,tr.dt-total td.tone-warn,tr.dt-total td.tone-bad{color:
 .stat-value{font-family:'Poppins',sans-serif;font-weight:800;font-size:1.7rem;color:var(--sc,var(--navy));line-height:1.15;}
 .stat-value .num{display:inline-block;}
 .stat-label{font-size:.8rem;color:var(--muted);line-height:1.5;margin-top:6px;}
-.stat-progress{margin-top:12px;height:6px;border-radius:99px;background:var(--line);overflow:hidden;}
-.stat-progress i{display:block;height:100%;width:0%;background:var(--sc,var(--orange));border-radius:99px;transition:width 1.1s cubic-bezier(.2,.85,.3,1);}
+.stat-card.ring-card{display:flex;align-items:center;gap:14px;}
+.stat-ring{width:56px;height:56px;flex-shrink:0;position:relative;}
+.stat-ring svg{width:100%;height:100%;transform:rotate(-90deg);}
+.stat-ring circle{fill:none;stroke-width:5;}
+.stat-ring circle.bg{stroke:var(--line);}
+.stat-ring circle.fg{stroke-linecap:round;transition:stroke-dashoffset 1.2s cubic-bezier(.2,.85,.3,1);}
+.stat-ring .ring-txt{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  font-family:'Poppins',sans-serif;font-weight:800;font-size:.72rem;color:var(--navy);}
+.ring-card .stat-body{flex:1;min-width:0;}
+.ring-card .stat-value{font-size:1.1rem;}
 .stat-card.badge{display:flex;align-items:center;gap:12px;}
 .stat-card.badge .badge-ic{width:38px;height:38px;border-radius:10px;background:var(--sc,var(--orange));color:#fff;
   display:flex;align-items:center;justify-content:center;flex-shrink:0;}
@@ -283,6 +334,17 @@ tr.dt-total td.tone-good,tr.dt-total td.tone-warn,tr.dt-total td.tone-bad{color:
   border-radius:12px;padding:16px 18px;font-size:.88rem;line-height:1.75;color:var(--ink);box-shadow:0 4px 14px rgba(15,17,17,.04);}
 .challenge-item .num{flex-shrink:0;width:26px;height:26px;border-radius:50%;background:var(--sc);color:#fff;font-weight:800;
   font-size:.78rem;display:flex;align-items:center;justify-content:center;font-family:'Poppins',sans-serif;}
+
+.q-block{margin-top:34px;background:#FFF8EE;border:1px dashed var(--sc);border-radius:14px;padding:20px 22px;}
+.q-block .q-title{font-family:'Poppins',sans-serif;font-weight:700;font-size:.92rem;color:var(--navy);margin-bottom:6px;
+  display:flex;align-items:center;gap:8px;}
+.q-block .q-sub{font-size:.78rem;color:var(--muted);margin-bottom:14px;}
+.q-list{display:flex;flex-direction:column;gap:9px;}
+.q-item{display:flex;gap:10px;font-size:.85rem;line-height:1.65;color:var(--ink);}
+.q-item .qmark{flex-shrink:0;width:20px;height:20px;border-radius:50%;background:var(--sc);color:#fff;font-weight:800;
+  font-size:.7rem;display:flex;align-items:center;justify-content:center;margin-top:1px;}
+.q-open{margin-top:14px;padding-top:14px;border-top:1px dashed rgba(0,0,0,.12);font-size:.85rem;color:var(--ink);
+  font-style:italic;}
 
 .site-footer{margin-top:auto;text-align:center;padding:24px;color:var(--muted);font-size:.74rem;border-top:1px solid var(--line);}
 
@@ -352,6 +414,11 @@ tr.dt-total td.tone-good,tr.dt-total td.tone-warn,tr.dt-total td.tone-bad{color:
   <footer class="site-footer">Amazon Egypt &middot; Empower Team &middot; Interactive H1'26 Report</footer>
 </div>
 
+<nav class="mini-nav" id="miniNav" aria-label="Section quick links"></nav>
+<button class="back-to-top" id="backToTop" aria-label="Back to top" type="button">
+  <svg viewBox="0 0 24 24" fill="none"><path d="M12 19V5M5 12l7-7 7 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+</button>
+
 <script>
 /* ============ ICONS ============ */
 const ICONS = {
@@ -364,6 +431,7 @@ const ICONS = {
   bell:`<svg viewBox="0 0 48 48" fill="none"><path d="M12 34v-9a12 12 0 0124 0v9l4 5H8l4-5z" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round"/><path d="M19 42a5 5 0 0010 0" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg>`,
   gate:`<svg viewBox="0 0 48 48" fill="none"><rect x="8" y="8" width="14" height="34" rx="2" stroke="currentColor" stroke-width="2.6"/><path d="M26 8h14M40 8v34M26 42h14M32 20l6 4-6 4" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
   search:`<svg viewBox="0 0 48 48" fill="none"><circle cx="21" cy="21" r="13" stroke="currentColor" stroke-width="2.6"/><path d="M30.5 30.5L42 42" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/><path d="M16 21l3.5 3.5L27 17" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+  inspect:`<svg viewBox="0 0 48 48" fill="none"><path d="M6 14l18-8 18 8-18 8-18-8z" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round"/><path d="M6 14v14l18 8 18-8V14M24 22v14" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round"/><circle cx="35" cy="12" r="8" fill="var(--card,#fff)" stroke="currentColor" stroke-width="2.4"/><path d="M32 12l2 2 4-4" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
   target:`<svg viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="17" stroke="currentColor" stroke-width="2.6"/><circle cx="24" cy="24" r="9.5" stroke="currentColor" stroke-width="2.6"/><circle cx="24" cy="24" r="2.5" fill="currentColor"/></svg>`,
   warn:`<svg viewBox="0 0 48 48" fill="none"><path d="M24 6l20 35H4L24 6z" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round"/><path d="M24 20v9" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/><circle cx="24" cy="34" r="1.6" fill="currentColor"/></svg>`,
   chevron:`<svg viewBox="0 0 24 24" fill="none"><path d="M9 5l7 7-7 7" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
@@ -379,7 +447,7 @@ const SECTIONS = [
   teaser:'<strong>16%</strong> of deactivated SPs reinstated, securing <strong>65%</strong> of enforced GMS',
   subs:[
     { title:'CTPS Enforcements & Reinstatements',
-      background:"EG business was hit by 3.9K+ deactivated accounts, contributing ~834K BAs and $19.2M T12M GMS (9% of total 3P GMS). Related Account issues drove 62% of enforcements, followed by Risk-FIRE Failed Review (16%) and Product Quality issues (10% of sellers / 38% of GMS impact).",
+      background:"EG business was hit by 3.9K+ deactivated accounts, contributing ~834K BAs and $19.2M T12M GMS — impacting 9% of total 3P T12M GMS, 26% of total 3P BAs, and 24% of overall 3P sellers. Related Account issues drove 62% of enforcements, followed by Risk-FIRE Failed Review (16%) and Product Quality issues (10% of sellers / 38% of GMS impact).",
       actions:[
         "Deep-dived into the suspended list with 6+ risk program teams to flag and prioritize top SPs",
         "Educated enforced sellers on the appeal process and built tailored action plans",
@@ -391,9 +459,13 @@ const SECTIONS = [
       results:[
         {value:"3.9K+", label:"seller accounts deactivated in H1'26"},
         {value:"$19.2M", label:"T12M GMS impacted (9% of total 3P GMS)"},
+        {value:"26%", label:"of total 3P BAs impacted"},
+        {value:"24%", label:"of overall 3P sellers impacted"},
         {value:"16%", label:"of deactivated SPs reinstated (615/3.9K)"},
+        {value:"5%", label:"of total 3P — reinstated SP share"},
         {value:"65%", label:"of enforced T12M GMS reactivated ($12.2M/$19.1M)"},
         {value:"6%", label:"of total 3P GMS reactivated YTD"},
+        {value:"20%", label:"reinstated sellers' ASINs share of total 3P (2026)"},
         {value:"+35%", label:"YoY growth in reactivated T12M GMS"},
         {value:"+114%", label:"YoY growth in reactivated BAs"}
       ],
@@ -454,9 +526,11 @@ const SECTIONS = [
         "Built a manual review approach with EG Account Managers via Quip",
         "Analyzed each seller account to identify root cause and resolution path",
         "Provided order/tracking IDs as delivery evidence, guided document submission",
+        "Addressed buyer-seller message response times",
         "Fixed inactive ASINs (stranded inventory, search-suppressed listings)",
         "Escalated valid rejected appeals to collusion and risk teams",
-        "Modified SOPs with program teams to fit the EG marketplace"
+        "Modified SOPs with program teams to fit the EG marketplace",
+        "Documented insights and knowledge for the entire 3P team's reference"
       ],
       results:[
         {value:"96%", label:"of shared cases resolved in 2026"},
@@ -523,7 +597,7 @@ const SECTIONS = [
         "Followed up on cases via EG VAT external mailbox and resolved seller-support TRN cases",
         "Ran call-downs to educate sellers on TRN documents and two-step verification",
         "Adapted to the new LSIV process (7–10 business days for legal-entity verification)",
-        "TRN SME partnered with RCO to stage/unstage sellers missed from the queue"
+        "Ehab Algaml, TRN SME in EG 3P, partnered with RCO to stage/unstage sellers missed from the queue"
       ],
       results:[
         {value:"2,103", label:"sellers verified their TRNs (40% of new registrations)"},
@@ -564,10 +638,13 @@ const SECTIONS = [
       actions:[
         "Prioritized sellers by AHR score and violation severity (CCR, WIS)",
         "Identified top sellers by GMS and violations to prevent deactivation",
-        "Removed high-severity defective ASINs and submitted invoices/POAs",
+        "Educated sellers on appeal processes for health improvement",
+        "Replaced de-risked sellers with new at-risk ones to keep the pipeline current",
+        "Removed high-severity defective ASINs (CCR, WIS, IP, RP), reviewed policies, submitted invoices/POAs",
         "Escalated false-positive / broken-process cases for secondary review",
-        "AHR SME ran weekly syncs with TSE, VoS and risk managers",
-        "Shared weekly top-offender updates with leadership"
+        "Conducted weekly calls with program managers on gaps and red flags",
+        "Ahmed Samy, AHR SME in EG 3P, gathered pain points from Empower members and account managers for weekly syncs with TSE, VoS and risk managers",
+        "Shared weekly top-offender updates with leadership and program managers"
       ],
       results:[
         {value:"94%", label:"de-risking success rate (930/987 sellers)"},
@@ -577,7 +654,7 @@ const SECTIONS = [
         {value:"44%", label:"of total 3P T12M GMS secured ($80.5M/$182M)"},
         {value:"3%", label:"enforcement rate — only 44 sellers enforced"},
         {value:"#1", label:"MENA ranking in appeal & success rate"},
-        {value:"5,993", label:"EG WIS PPM (April '26), ahead of plan"}
+        {value:"5,993", label:"EG WIS PPM (April '26) — +1% ahead of plan"}
       ],
       tables:[
         { title:"2026 Prime Day — Empower Team Support", note:"Event-window contribution",
@@ -610,36 +687,42 @@ const SECTIONS = [
       ]
     },
     { title:'Product Safety — Toys De-risking',
-      background:"A 2025 program subjecting toy products to safety controls to meet MENAT safety standards, covering 12% of EG toys GL GMS split 60/40 between branded and generic products.",
+      background:"Launched in 2025 by the Product Safety Compliance team to ensure toy products meet required safety standards for Amazon MENAT stores while enhancing seller experience. The program subjects 12% of EG Toys GL GMS ($604K/$5.1M) to safety controls, split 60%/40% between branded ($359K) and generic ($245K) products.",
       actions:[
-        "Visited the General Organization for Export & Import Control on test costs/lead times",
-        "Led cross-market approval with US/EU/AU on a monthly mechanism",
-        "Ran brand prequalification, safe-listing and an LFR validation framework",
-        "Piloted Sponsored Testing (Jan–Mar '26) for high-GMS ASINs"
+        "Visited General Organization for Export & Import Control to understand test report costs and lead times (11K EGP/SKU textiles, 5K EGP/SKU electric toys, 6K EGP/SKU plastic toys)",
+        "Led de-risking initiatives with TSE and Safety Compliance: cross-market approval with US/EU/AU on a monthly mechanism",
+        "Ran brand prequalification, safe-listing and a Large Format Retailer (LFR) validation framework",
+        "Piloted Sponsored Testing (Jan–Mar '26) for high-GMS ASINs",
+        "Ehab AlGamal, EG Safety Controls SME in EG 3P, led the smooth launch of the de-risking program"
       ],
       results:[
-        {value:"$2.7M", label:"at-risk T12M GMS across 10.9K ASINs"},
-        {value:"61%", label:"of at-risk ASINs de-risked (6,647/10,910)"},
-        {value:"$1.6M", label:"GMS de-risked (60% of risked GMS)"},
-        {value:"$0.7M", label:"remaining at-risk GMS (4,236 ASINs)"},
+        {value:"$3.3M", label:"at-risk T12M GMS across 40.6K ASINs (Aug '26 snapshot)"},
+        {value:"20%", label:"of at-risk ASINs de-risked (9,647/40,685)"},
+        {value:"$1.48M", label:"GMS de-risked (45% of risked GMS)"},
+        {value:"3,796", label:"ASINs pending verification ($380K shipped GMS, 5% of total)"},
+        {value:"69%", label:"of at-risk selection enforced (27.9K ASINs, $1.4M T12M GMS)"},
         {value:"$0.1M", label:"successfully de-risked — Hedaya & Hamley's brands"},
-        {value:"$0.01M", label:"additional GMS in de-risking pipeline"}
+        {value:"$0.01M", label:"additional GMS in de-risking pipeline"},
+        {value:"$0.7M", label:"remaining at-risk GMS — 4,236 ASINs at risk of Q1 suppression"}
       ],
       tables:[
-        { title:"Safety Test Report — Cost & Category", note:"Per SKU, via General Organization for Export & Import Control",
+        { title:"ASIN Status — Snapshot Comparison", note:"Control launch 10/14/2025 · suppression date 01/12/2026, vs. current 1-Aug-26 snapshot",
+          columns:[{key:'status',label:'ASIN Status'},{key:'cnt1',label:'ASIN Count (Baseline)',align:'right'},{key:'gms1',label:'Net Shipped GMS T12M (Baseline)',align:'right'},{key:'cnt2',label:'ASIN Count (Aug\u201926)',align:'right'},{key:'gms2',label:'Net Shipped GMS T12M (Aug\u201926)',align:'right'}],
+          rows:[
+            {status:'De-Risked', cnt1:'0', gms1:'$0', cnt2:'6,210', gms2:'$1,179,272', _tone:{cnt2:'good'}},
+            {status:'Enforced', cnt1:'4,811', gms1:'$283,106', cnt2:'27,930', gms2:'$1,459,682'},
+            {status:'Pending', cnt1:'182', gms1:'$9,383', cnt2:'3,796', gms2:'$379,375'},
+            {status:'Prequalified', cnt1:'524', gms1:'$32,962', cnt2:'319', gms2:'$66,978'},
+            {status:'Reinstated', cnt1:'701', gms1:'$98,000', cnt2:'2,430', gms2:'$230,616'},
+            {status:'Total at Snapshot', cnt1:'6,219', gms1:'$423,497', cnt2:'40,683', gms2:'$3,315,922', _total:true}
+          ]
+        },
+        { title:"Safety Test Report — Cost per Category", note:"Via General Organization for Export & Import Control",
           columns:[{key:'cat',label:'Category'},{key:'cost',label:'Cost per SKU',align:'right'}],
           rows:[
             {cat:'Textiles', cost:'11,000 EGP'},
             {cat:'Electric toys', cost:'5,000 EGP'},
             {cat:'Plastic toys', cost:'6,000 EGP'}
-          ]
-        },
-        { title:"Program Coverage", note:"12% of EG Toys GL GMS subjected to safety controls",
-          columns:[{key:'metric',label:'Metric'},{key:'val',label:'Value',align:'right'}],
-          rows:[
-            {metric:'Toys GL GMS in scope', val:'$604K / $5.1M (12%)'},
-            {metric:'Branded products share', val:'$359K (60%)'},
-            {metric:'Generic products share', val:'$245K (40%)'}
           ]
         }
       ]
@@ -652,13 +735,16 @@ const SECTIONS = [
   teaser:'<strong>85%</strong> influence rate, <strong>42</strong> top sellers converted to managed',
   subs:[
     { title:'Semi-Unmanaged Conversion',
-      background:"Supported unmanaged sellers across 3 SRP buckets (0–350, 350–1.5K, 1.5K–5K units) to subscribe and hit monthly inbound targets. Starting Jan'26 with 409 unmanaged sellers, the team reached an 85% subscription success rate.",
+      background:"Supported unmanaged sellers across 3 SRP buckets (0–350, 350–1.5K, 1.5K–5K units) to subscribe and hit monthly inbound targets. The team started in Jan'26 with 409 unmanaged sellers, identifying the top 222 through call-downs — sellers who previously achieved only 31% (8.4K/27K) of the Dec target for 350-1K FBA SRP and 11% (1.2K/10.5K) of the 1K-5K target under the old program.",
       actions:[
-        "Contacted assigned sellers, classified interest, resolved open SPS / reimbursement / SAFE-T issues",
+        "Contacted assigned sellers, classified interest, resolved open SPS / reimbursement / SAFE-T / AHD issues",
         "Ran call scripts highlighting FBA vs. MFN-flex CCR/WIS handling advantages",
         "Supported AHD violations, listing/reimbursement issues, FBA PO creation",
-        "Set ETA-driven follow-ups per unit bucket, adjusted targets with POC by T3M FBA average",
-        "Converted top offending IB units from semi-unmanaged to managed"
+        "Set ETA-driven follow-ups per unit bucket to ensure delivery within the month",
+        "Increased seller-targeted units above shared targets to account for transit losses/damage",
+        "Adjusted targets with POC based on T3M average FBA IB inbounding",
+        "Converted top offending IB units from semi-unmanaged to managed by existing AMs",
+        "Led by Zeyad Emam, Empower team SRP POC, with new hire Samar Omar"
       ],
       results:[
         {value:"85%", label:"of shared seller list influenced to adopt SRP (through Jan'26)"},
@@ -703,7 +789,7 @@ const SECTIONS = [
         }
       ],
       tables:[
-        { title:"SRP FBA ASP Buckets — Full Monthly Detail", note:"Total SP · Winning SP · Target vs. Actual IB, Feb–Jul '26",
+        { title:"SRP FBA ASP Buckets — Full Monthly Detail", note:"Total SP · Winning SP · Target vs. Actual IB, Feb–Jul '26. Delay factor: the gap to 100% of target is primarily due to the monthly conversion process from semi-managed to fully managed sellers.",
           columns:[
             {key:'bucket',label:'Bucket'},{key:'month',label:'Month'},{key:'totalSP',label:'Total SP',align:'right'},
             {key:'winSP',label:'Winning SP',align:'right'},{key:'target',label:'Monthly Target',align:'right'},
@@ -740,20 +826,22 @@ const SECTIONS = [
   teaser:'<strong>10.87M</strong> GVs validated, <strong>58%</strong> price competitiveness reached',
   subs:[
     { title:'3P Pricing',
-      background:"A team departure created a pricing backlog. The project manages sellers' price health by identifying top ASINs with glance views (GVs) and setting competitive prices.",
+      background:"An unforeseen team member departure and reassignment to the OHL team created a backlog in the pricing project. The project manages sellers' price health by identifying top ASINs with glance views (GVs) and setting competitive prices.",
       actions:[
         "Applied a 500 GV/PL threshold, targeting ~200–250 top GV ASINs weekly",
         "Delivered full education on the pricing dashboard and Product Intelligence tool",
         "Ran hundreds of weekly seller call-downs",
         "Worked top-identified ASINs every two days to match required price competitiveness",
-        "Shared 2x weekly updates on pricing validation feedback"
+        "Gathered callouts, feedback and pain points for ASINs unable to match required price",
+        "Led by Zeyad Emam, Empower team Pricing POC",
+        "Shared 2x weekly updates on pricing validation feedback across catalog"
       ],
       results:[
         {value:"10.87M", label:"GVs validated across ~5.7K top ASINs"},
         {value:"+199%", label:"YoY growth in validated GVs / ASIN count"},
         {value:"54%", label:"of top ASINs matched required price (3,111/5,721)"},
         {value:"58%", label:"of T7D GVs price-competitive ($6.34M/$10.87M)"},
-        {value:"+178%", label:"YoY growth in price-competitive GVs"}
+        {value:"+178%", label:"YoY growth in price-competitive GVs ($6.34M/$2.2M)"}
       ],
       tables:[
         { title:"H1'26 Pricing List — Match Status Breakdown", note:"By ASIN count and T7D glance views (GVs)",
@@ -784,20 +872,21 @@ const SECTIONS = [
   teaser:'<strong>89%</strong> resolution rate across 1,157 escalated cases',
   subs:[
     { title:'Tax Invoices',
-      background:"Sellers must provide tax invoices for orders above 2K EGP. Consumer-protection escalations often led to partial refunds (14%) or return-less refunds, hurting satisfaction. By mid-year the team worked 1,157 escalated cases.",
+      background:"Sellers must provide tax invoices for orders above 2K EGP. The Government Relations team handled EG consumer-protection agency escalations, which often led to partial refunds (14%) or return-less refunds — causing losses and hurting customer satisfaction. By mid-year'26 the team worked 1,157 escalated cases.",
       actions:[
-        "Implemented a new CTI tracking mechanism for high-value invoice requests",
+        "Implemented a new CTI tracking mechanism for all EG 3P high-value invoice requests",
         "Partnered with the Tax Invoice team to identify and contact top offending sellers",
         "Defined 3–5 day SLAs (extendable once) before initiating refunds",
         "Distributed and prioritized tickets by seller for faster resolution",
-        "Shared weekly repeat-offender reports with the Program Manager and CS team"
+        "Shared weekly repeat-offender reports with the Program Manager and CS team",
+        "Updated SOPs where needed"
       ],
       results:[
         {value:"89%", label:"of shared cases resolved (1,034/1,157)"},
-        {value:"75%", label:"of resolved cases provided required invoices (616/829)"},
+        {value:"75%", label:"of resolved cases provided required invoices (616/829), vs. 15% before Empower owned the program"},
         {value:"25%", label:"of resolved cases compensated/refunded"},
         {value:"78%", label:"item-value satisfaction ($8.64M/$11.13M)"},
-        {value:"9%", label:"of tickets had processing errors"},
+        {value:"9%", label:"of tickets had errors — incorrect MCIDs, order IDs, allocated SA tickets"},
         {value:"EL-Ogil & Shorouk", label:"top offenders — 12–14% of all high-priority requests", badge:true}
       ],
       tables:[
@@ -839,16 +928,18 @@ const SECTIONS = [
   teaser:'<strong>86%</strong> backlog cleared, <strong>#1</strong> regional ranking',
   subs:[
     { title:'Andon Cord',
-      background:"Since Q4'23, unresolved Andon Cord tickets flagging defective, missing or wrong products were escalated by L8+ leadership. In H1'26 the team faced ~1.89K unresolved 3P FBA Andon cases.",
+      background:"Since Q4'23, unresolved Andon Cord tickets flagging defective, missing or wrong products were escalated by L8+ leadership as a high-priority issue impacting customer experience. Managed jointly by Customer Service and Andon teams. In H1'26 the team faced ~1.89K unresolved 3P FBA Andon cases.",
       actions:[
         "Assessed capacity and built a structured backlog-clearance plan within SLA",
         "Deep-dived wikis, SOPs and ticketing data to identify recurring root causes",
         "Built a corrective framework: routing defects, educating high-return sellers, escalating ASIN fixes to IDQ",
-        "Coordinated weekly with RBS and Catalog SMEs, tracked via WBRs"
+        "Hayam serves as dedicated POC for all 3P Andon Cord tickets",
+        "Monitored progress via weekly updates, audits and WBRs, coordinating with RBS and Catalog SMEs"
       ],
       results:[
         {value:"86%", label:"of FBA Andon backlog cleared (1,632/1,890)"},
         {value:"65%", label:"of suppressed non-defective ASINs reinstated"},
+        {value:"Full Ownership", label:"established full Andon Cord process ownership for Egypt", badge:true},
         {value:"90%", label:"ongoing resolution rate YTD"},
         {value:"70%", label:"ongoing reinstatement rate YTD"},
         {value:"#1", label:"regional ranking vs. AE & SA"},
@@ -874,8 +965,9 @@ const SECTIONS = [
       results:[
         {value:"1,454", label:"sellers authorized (+138% YoY growth)"},
         {value:"90%", label:"reduction in CCR for gated brands"},
-        {value:"$18.6M", label:"GMS since Jan'26 (7.5% of marketplace)"},
-        {value:"27", label:"high-risk brands gated (13 in 2025, 14 in 2026)"}
+        {value:"$18.6M", label:"GMS, Jan'26–Jun'26 (7.5% of $245.17M total marketplace)"},
+        {value:"27", label:"high-risk brands gated (13 in 2025, 14 in 2026)"},
+        {value:"No Negative Impact", label:"on overall growth — no major negative impact observed", badge:true}
       ],
       tables:[
         { title:"SIFR Gates — Brand-Level Performance (All 27 Brands)", note:"Sorted by H1'26 GMS generated · initial batch → approved sellers",
@@ -925,7 +1017,9 @@ const SECTIONS = [
         {value:"275", label:"sellers approved (~6,756 brands)"},
         {value:"+112%", label:"YoY growth in approved sellers"},
         {value:"+178%", label:"YoY growth in approved brands"},
-        {value:"$22.6M", label:"GMS since Jan'26 (9% of marketplace)"}
+        {value:"$22.6M", label:"GMS, Jan'26–Jun'26 (9% of $245.17M total marketplace)"},
+        {value:"Barrier Removed", label:"invoice barrier fully overcome, significantly increasing selection rate", badge:true},
+        {value:"New Sellers", label:"attracted sellers who previously struggled with standard-track rejections", badge:true}
       ],
       tables:[
         { title:"SAFE Listing — All 20 Batches", note:"Seller & brand count with GMS generated per batch",
@@ -993,21 +1087,23 @@ const SECTIONS = [
   teaser:'<strong>96.7%</strong> QA rate, <strong>121</strong> sellers vaulted',
   subs:[
     { title:'GPV Bin-Checks',
-      background:"3P faced poor invoice verification quality and low supplier contact rates. Operating as an EG hybrid team with GPV/TSE, the Empower team verifies FBA defective ASINs and reverses defects when none are found.",
+      background:"3P faced poor invoice verification quality and low supplier contact rates. Operating as an EG hybrid team with GPV/TSE, the Empower team verifies FBA defective ASINs, reverses defects when none are found, and deactivates/warns the seller when a true-positive complaint is confirmed via the Paragon tool.",
       actions:[
         "Expanded capacity to 4 members, reaching 200 BC tickets/week",
         "Ran thorough policy education and SOP-compliant auditing",
         "Deep-dived internal/external resources for accurate results and QA",
         "Took enforcement action via the Paragon tool on confirmed defects",
-        "Built an internal Quip for AMs to submit ad-hoc FBA CCR bin-check requests"
+        "Supported Retail backlog resolution",
+        "Processed 97% of total EG BC tickets (1,748/1,783)",
+        "Hayam, EG bin-check SME, built an internal Quip for AMs to submit ad-hoc FBA CCR bin-check requests via the PVS tool"
       ],
       results:[
-        {value:"96.7%", label:"QA rate (vs. SA 95%, AE 93%; +1.7% YoY)"},
+        {value:"96.7%", label:"QA rate (vs. SA 95%, AE 93%; benchmark 98%) — +1.7% YoY"},
         {value:"100%", label:"of assigned tickets addressed within SLA"},
         {value:"88%", label:"ground truth established (1,748/1,982)"},
         {value:"11%", label:"no inventory (224/1,982)"},
         {value:"1%", label:"FC unresponsive (7/1,982)"},
-        {value:"98%", label:"reversal rate for no-defect findings"},
+        {value:"98%", label:"reversal rate for no-defect findings (841/1,748)"},
         {value:"$1.02M", label:"in FBA CCR reversals generated"},
         {value:"+64%", label:"YoY growth in Ground Truth worked tickets (1,070→1,748)"},
         {value:"+97%", label:"YoY growth in no-defect reversals (427→841)"}
@@ -1038,40 +1134,77 @@ const SECTIONS = [
       ]
     },
     { title:'Vault 2.0',
-      background:"Project Vault enables proactive, physical product verification at scale (vs. invoices), with auto-reversal for verified seller-brand combinations meeting criteria.",
+      background:"Project Vault enables proactive, physical product verification at scale (vs. invoices) — exploring third-party or internal teams for large-scale FBA/Flex product checks to protect good sellers and enforce bad actors faster. Auto-reversal is implemented for verified seller-brand combinations meeting criteria.",
       actions:[
         "Raised brand-ASIN combinations on the PVS tool",
-        "Followed up with SPX5 and CAI6 POCs for required imagery",
+        "Followed up with SPX5 and CAI6 POCs for required imagery to meet SLAs, in addition to the SF Ops team for Flex SPs",
         "Built a Quip for quick auditing and vaulted-combo tracking",
         "Replaced OOS brand-ASIN combinations",
-        "Collaborated with TSE and VoS teams to hit goals"
+        "Collaborated with TSE and VoS teams to hit goals",
+        "Followed up with Hoss and TLs on PL top-SP nominations",
+        "Categorized nominated sellers into tiers / enrollment method based on T180D PQ performance"
       ],
       results:[
-        {value:"121", label:"sellers successfully vaulted (35% of MENA stores)"},
-        {value:"$59.5M+", label:"GMS coverage across vaulted sellers ($213M store total)"},
-        {value:"35%", label:"MENA vault share vs. SA 27% / AE 20%"},
-        {value:"37%", label:"of total store GMS covered by vault program overall"}
+        {value:"130", label:"sellers successfully vaulted (31.4% of MENA stores)"},
+        {value:"58%", label:"EG conversion rate (130/224 enrolled)"},
+        {value:"$41.2M+", label:"GMS secured across vaulted sellers"},
+        {value:"26%", label:"GMS coverage of total PL GMS ($158.3M)"},
+        {value:"$316,918", label:"average GMS per vaulted seller"},
+        {value:"$3.96M", label:"GMS at risk — enrolled, not yet vaulted"},
+        {value:"$12.1M", label:"GMS lost — rejected / disenrolled sellers"}
       ],
       tables:[
-        { title:"EG Store Summary — Vault Status by Category", note:"CE / CL / OHL / SL store categories · SP YTD GMS vs. PL GMS",
-          columns:[{key:'status',label:'Status / Category'},{key:'sp',label:'Count of SPs',align:'right'},{key:'gms',label:'SP YTD GMS',align:'right'},{key:'pl',label:'PL GMS',align:'right'},{key:'pct',label:'% of GMS',align:'right'}],
+        { title:"Vault 2.0 EG — Dashboard Summary", note:"Key performance indicators, current snapshot",
+          columns:[{key:'metric',label:'Metric'},{key:'val',label:'Value',align:'right'}],
           rows:[
-            {status:'Vaulted', sp:'121', gms:'$59,434,110', pl:'$213,000,331', pct:'28%', _emph:true, _tone:{pct:'good'}},
-            {status:'— CE', sp:'37', gms:'$22,950,178', pl:'$54,972,021', pct:'42%', _indent:true},
-            {status:'— CL', sp:'46', gms:'$15,585,096', pl:'$46,643,352', pct:'33%', _indent:true},
-            {status:'— OHL', sp:'28', gms:'$16,805,441', pl:'$90,224,383', pct:'19%', _indent:true},
-            {status:'— SL', sp:'10', gms:'$4,093,395', pl:'$21,160,575', pct:'19%', _indent:true},
-            {status:'Rejected', sp:'53', gms:'$16,771,765', pl:'$213,000,331', pct:'8%', _emph:true, _tone:{pct:'bad'}},
-            {status:'— CE', sp:'22', gms:'$6,557,905', pl:'$54,972,021', pct:'12%', _indent:true},
-            {status:'— CL', sp:'14', gms:'$4,188,439', pl:'$46,643,352', pct:'9%', _indent:true},
-            {status:'— OHL', sp:'12', gms:'$4,900,982', pl:'$90,224,383', pct:'5%', _indent:true},
-            {status:'— SL', sp:'5', gms:'$1,124,438', pl:'$21,160,575', pct:'5%', _indent:true},
-            {status:'WIP', sp:'19', gms:'$3,313,142', pl:'$213,000,331', pct:'2%', _emph:true, _tone:{pct:'warn'}},
-            {status:'— CE', sp:'8', gms:'$1,837,605', pl:'$54,972,021', pct:'3%', _indent:true},
-            {status:'— CL', sp:'8', gms:'$1,050,828', pl:'$46,643,352', pct:'2%', _indent:true},
-            {status:'— OHL', sp:'2', gms:'$366,158', pl:'$90,224,383', pct:'0%', _indent:true},
-            {status:'— SL', sp:'1', gms:'$58,551', pl:'$21,160,575', pct:'0%', _indent:true},
-            {status:'Grand Total', sp:'193', gms:'$79,519,017', pl:'$213,000,331', pct:'37%', _total:true}
+            {metric:'Total Enrolled', val:'224', _emph:true},
+            {metric:'Vaulted', val:'130', _tone:{val:'good'}},
+            {metric:'Rejected', val:'66', _tone:{val:'bad'}},
+            {metric:'WIP', val:'23', _tone:{val:'warn'}},
+            {metric:'Disenrolled', val:'5'},
+            {metric:'Conversion Rate', val:'58.0%', _total:true},
+            {metric:'GMS Secured', val:'$41,199,292'},
+            {metric:'Total PL GMS', val:'$158,336,134'},
+            {metric:'GMS Coverage', val:'26.0%'},
+            {metric:'Avg GMS / SP', val:'$316,918'},
+            {metric:'GMS at Risk', val:'$3,959,875', _tone:{val:'warn'}},
+            {metric:'GMS Lost', val:'$12,102,880', _tone:{val:'bad'}}
+          ]
+        },
+        { title:"MENA Marketplace Summary", note:"Enrolled / disenrolled sellers by marketplace, share of MENA total",
+          columns:[{key:'mp',label:'Marketplace'},{key:'enrolled',label:'Enrolled',align:'right'},{key:'disenrolled',label:'Disenrolled',align:'right'},{key:'total',label:'Total',align:'right'},{key:'share',label:'% Share',align:'right'}],
+          rows:[
+            {mp:'EG', enrolled:'130', disenrolled:'2', total:'132', share:'31.4%', _emph:true, _tone:{share:'good'}},
+            {mp:'SA', enrolled:'101', disenrolled:'4', total:'105', share:'24.9%'},
+            {mp:'TR', enrolled:'96', disenrolled:'0', total:'96', share:'22.8%'},
+            {mp:'AE', enrolled:'86', disenrolled:'2', total:'88', share:'20.9%'},
+            {mp:'MENA Total', enrolled:'413', disenrolled:'8', total:'421', share:'100.0%', _total:true}
+          ]
+        },
+        { title:"Performance by Seller Tier", note:"Top / Mid / Low tier vaulting success",
+          columns:[{key:'tier',label:'Tier'},{key:'sps',label:'Total SPs',align:'right'},{key:'vaulted',label:'Vaulted',align:'right'},{key:'rate',label:'Success Rate',align:'right'},{key:'gms',label:'GMS Secured',align:'right'}],
+          rows:[
+            {tier:'Top Tier', sps:'62', vaulted:'48', rate:'77.4%', gms:'$17,832,726', _tone:{rate:'good'}},
+            {tier:'Mid Tier', sps:'14', vaulted:'9', rate:'64.3%', gms:'$1,468,277', _tone:{rate:'warn'}},
+            {tier:'Low Tier', sps:'148', vaulted:'73', rate:'49.3%', gms:'$21,898,289', _tone:{rate:'bad'}}
+          ]
+        },
+        { title:"Enrollment Method Performance", note:"Which intake channel converts best",
+          columns:[{key:'method',label:'Method'},{key:'sps',label:'Total SPs',align:'right'},{key:'vaulted',label:'Vaulted',align:'right'},{key:'rate',label:'Success Rate',align:'right'},{key:'gms',label:'GMS Secured',align:'right'}],
+          rows:[
+            {method:'Reactive Bincheck', sps:'14', vaulted:'13', rate:'92.9%', gms:'$5,797,484', _tone:{rate:'good'}},
+            {method:'Documents', sps:'13', vaulted:'8', rate:'61.5%', gms:'$3,557,270', _tone:{rate:'warn'}},
+            {method:'Proactive Bincheck', sps:'182', vaulted:'104', rate:'57.1%', gms:'$30,515,779', _tone:{rate:'warn'}},
+            {method:'Flex Bincheck', sps:'15', vaulted:'5', rate:'33.3%', gms:'$1,328,759', _tone:{rate:'bad'}}
+          ]
+        },
+        { title:"Performance by Product Line", note:"CE / CL / OHL / SL coverage",
+          columns:[{key:'pl',label:'Product Line'},{key:'sps',label:'Total SPs',align:'right'},{key:'vaulted',label:'Vaulted',align:'right'},{key:'gms',label:'GMS Secured',align:'right'},{key:'coverage',label:'% PL Coverage',align:'right'}],
+          rows:[
+            {pl:'CL', sps:'82', vaulted:'53', gms:'$13,195,992', coverage:'35.6%', _tone:{coverage:'good'}},
+            {pl:'CE', sps:'69', vaulted:'36', gms:'$13,302,470', coverage:'33.8%', _tone:{coverage:'good'}},
+            {pl:'OHL', sps:'47', vaulted:'27', gms:'$12,261,883', coverage:'18.3%', _tone:{coverage:'warn'}},
+            {pl:'SL', sps:'26', vaulted:'14', gms:'$2,438,947', coverage:'16.4%', _tone:{coverage:'bad'}}
           ]
         }
       ]
@@ -1079,7 +1212,68 @@ const SECTIONS = [
   ]
 },
 {
-  id:'s10', num:'10', color:'var(--c10)', color2:'#0F3D12', icon:'target',
+  id:'s10', num:'10', color:'var(--c10)', color2:'#5B1A6B', icon:'inspect',
+  title:'HRV — Customer Returns & Electronic Item Verification',
+  teaser:'<strong>853</strong> issues identified YTD, <strong>+43%</strong> YoY growth in order inspection',
+  subs:[
+    { title:'HRV Inspection Program',
+      background:"Established to address the growing number of customer compensations tied to high-value electronic items returned to the Fulfillment Center — laptops, mobile phones, tablets, smartwatches, AirPods and similar wireless audio devices.",
+      actions:[
+        "Performed detailed physical inspection of returned items — condition, root cause, authenticity, and disposition decision",
+        "Categorized return conditions and damage reasons",
+        "Inbound Inspection (mid-2025): extended support to inspect the same high-value categories at the Inbound stage, not just returns",
+        "MDR Verification (2026): oversaw inspection of items previously flagged as defective, problematic, or unsuitable for normal inventory processing",
+        "Verified disposal-flagged items were correctly classified and matched their actual physical condition",
+        "Orphan Inspection: assessed eligibility for resale outside Amazon, further processing, or disposal/destruction",
+        "Supported inventory acceptance — catching issues at Inbound before they progress through the supply chain"
+      ],
+      results:[
+        {value:"853", label:"total inspection findings, YTD 2026 (vs. 596 prior year)"},
+        {value:"+43%", label:"YoY growth in order inspection volume"},
+        {value:"432", label:"Fake item findings — the leading issue type"},
+        {value:"266", label:"Empty box findings"},
+        {value:"57", label:"Broken item findings"},
+        {value:"51", label:"Switch item findings"},
+        {value:"Fraud Prevention", label:"early ID of counterfeit/suspicious electronics reduces fraudulent inventory risk", badge:true},
+        {value:"Fewer Wrong Refunds", label:"detailed inspection gives stronger evidence of true condition/root cause", badge:true},
+        {value:"Inventory Quality", label:"inspection at both Inbound and Returns stages improves FC-wide inventory quality", badge:true},
+        {value:"Disposition Accuracy", label:"MDR & Orphan inspections add a verification layer before disposal", badge:true},
+        {value:"Customer Protection", label:"stops incorrect or counterfeit items progressing to customers", badge:true}
+      ],
+      charts:[
+        { title:"Total Issues Found — Monthly (2026)", unit:"", note:"Jan–Jun '26, MoM change shown below each bar",
+          series:[
+            {label:'Jan', value:90, mom:null},
+            {label:'Feb', value:179, mom:99},
+            {label:'Mar', value:97, mom:-46},
+            {label:'Apr', value:186, mom:92},
+            {label:'May', value:152, mom:-18},
+            {label:'Jun', value:149, mom:-2}
+          ]
+        }
+      ],
+      tables:[
+        { title:"Order Status 2026 — Issue Type Breakdown", note:"Monthly count by issue type, Jan–Jun",
+          columns:[{key:'issue',label:'Issue Type'},{key:'jan',label:'Jan',align:'right'},{key:'feb',label:'Feb',align:'right'},{key:'mar',label:'Mar',align:'right'},{key:'apr',label:'Apr',align:'right'},{key:'may',label:'May',align:'right'},{key:'jun',label:'Jun',align:'right'},{key:'total',label:'Grand Total',align:'right'}],
+          rows:[
+            {issue:'Fake item', jan:'51', feb:'80', mar:'56', apr:'100', may:'77', jun:'68', total:'432', _emph:true},
+            {issue:'Empty box', jan:'15', feb:'56', mar:'30', apr:'65', may:'50', jun:'50', total:'266', _emph:true},
+            {issue:'Broken', jan:'10', feb:'18', mar:'6', apr:'4', may:'5', jun:'14', total:'57'},
+            {issue:'Switch item', jan:'10', feb:'5', mar:'5', apr:'7', may:'15', jun:'9', total:'51'},
+            {issue:'Over Use', jan:'2', feb:'3', mar:'—', apr:'9', may:'5', jun:'4', total:'23'},
+            {issue:'Total loss', jan:'—', feb:'10', mar:'—', apr:'—', may:'—', jun:'—', total:'10'},
+            {issue:'Missing part', jan:'2', feb:'2', mar:'—', apr:'1', may:'—', jun:'4', total:'9'},
+            {issue:'Broken part', jan:'—', feb:'4', mar:'—', apr:'—', may:'—', jun:'—', total:'4'},
+            {issue:'Item replaced', jan:'—', feb:'1', mar:'—', apr:'—', may:'—', jun:'—', total:'1'},
+            {issue:'Grand Total', jan:'90', feb:'179', mar:'97', apr:'186', may:'152', jun:'149', total:'853', _total:true}
+          ]
+        }
+      ]
+    }
+  ]
+},
+{
+  id:'s11', num:'11', color:'var(--c11)', color2:'#0F3D12', icon:'target',
   title:'EG 3P WIS Reduction',
   teaser:'Target <strong>4,330 PPM</strong> — currently at <strong>5,993 PPM</strong>, ahead of plan',
   subs:[
@@ -1126,7 +1320,8 @@ const SECTIONS = [
             {metric:'Seller Flex PPM', val:'17,930 (stagnant)', _emph:true, _tone:{val:'bad'}},
             {metric:'Sellers suspended (Feb–Apr \u201926)', val:'10'},
             {metric:'Suspended sellers reinstated after POA', val:'100%'},
-            {metric:'Ongoing challenge', val:'Continued non-adherence to POA terms causes repeat back-and-forth', _tone:{val:'warn'}}
+            {metric:'Ongoing challenge', val:'Continued non-adherence to POA terms causes repeat back-and-forth', _tone:{val:'warn'}},
+            {metric:'Downstream impact', val:'Slower corrective actions; weaker Flex performance vs. MFN; lost Empower time/effort', _tone:{val:'bad'}}
           ]
         }
       ]
@@ -1136,17 +1331,18 @@ const SECTIONS = [
 ];
 
 const CHALLENGES = {
-  id:'s11', num:'!', color:'var(--c11)', color2:'#7A3805', icon:'warn',
+  id:'s12', num:'!', color:'var(--c12)', color2:'#7A3805', icon:'warn',
   title:'Empower Team — Key Challenges',
   teaser:'Reinstatement bottlenecks the team continues to navigate',
   items:[
     "Seller appeals on the standard path are frequently rejected, pushing cases into abuse escalation — averaging 1 to 1.5 months to reinstate accounts under PQ and AHR reason codes.",
     "Abuse escalation cases usually miss the agreed SLA.",
-    "Progress from investigators during scheduled Office Hours has been slow: some did not attend, some attended without sharing findings — adding a further week's delay.",
-    "Even with FRM Office Hours support, investigators often arrive unprepared, causing continued back-and-forth delays in reinstatement.",
-    "Two new enforcement laws (Risk MatDiff and SHERPA infringement) were implemented without prior notice, impacting the business.",
-    "Risk MatDiff carries an unclear threshold/timeframe and enforces sellers with a generic blurb and no clear reinstatement path.",
-    "Bin-checks continue to be used for account-level reinstatement decisions."
+    "After rejection on the standard path, progress from investigators during scheduled Office Hours has been slow this year — some did not attend, some attended without sharing findings, and others neither attended nor shared, often adding a further week's delay.",
+    "Although Monika provides support through FRM Office Hours (the escalation path for enforced sellers), investigators often arrive unprepared and have not reviewed the shared cases — even after recommendations are submitted, back-and-forth delays continue in the reinstatement process.",
+    "The implementation of two new enforcement laws (Risk MatDiff and SHERPA infringement) was done without prior notice, impacting the business.",
+    "Risk MatDiff is designed with an unclear threshold/timeframe and enforces sellers using a generic blurb and appeal process, with no forward reinstatement path (Samy is disputing the concept in the original thread).",
+    "Bin-checks continue to be used for account-level reinstatement decisions.",
+    "EG thresholds for these reason codes appear more aggressive than other marketplaces."
   ],
   tables:[
     { title:"New Enforcement Laws Impact — Risk MatDiff & SHERPA", note:"Deactivations under the two new, unannounced reason codes",
@@ -1163,7 +1359,19 @@ const CHALLENGES = {
         {reason:'Grand Total', sp:'43', ba:'82,034', gms:'$1,280,142', units:'81,818', _total:true}
       ]
     }
-  ]
+  ],
+  questions:{
+    title:"Risk MatDiff — Appeal Process Gaps",
+    sub:"Notification of deactivation and the enforcement blurb are sent to the seller, but the process leaves several requirements undefined:",
+    gaps:[
+      "A warned account has no defined period for review before enforcement.",
+      "There is no appeal path back to green (healthy) status.",
+      "There is no certain, consistent criteria for enforcement.",
+      "The WIS PPM threshold used to place an account under MatDiff scope is not defined.",
+      "A SAFE-T claim is treated as a signal of abuse, but it isn't necessarily seller abuse — it could reflect buyer or delivery-related issues."
+    ],
+    openQuestion:"For the FBA path — could we get an overview of WIS WoW performance before vs. after this reason code was implemented?"
+  }
 };
 
 /* ============ HERO STATS ============ */
@@ -1258,22 +1466,61 @@ function buildStatCard(r, color){
       <div><div class="stat-value" style="color:${color};font-size:1.05rem;">${r.value}</div><div class="stat-label">${r.label}</div></div>`;
     return wrap;
   }
-  wrap.className = 'stat-card';
   const isPct = /%$/.test(r.value.trim());
-  const pctNum = isPct ? Math.min(100, Math.abs(parseFloat(r.value))) : 0;
+  if(isPct){
+    wrap.className = 'stat-card ring-card';
+    const pctNum = Math.min(100, Math.abs(parseFloat(r.value)));
+    const R = 21, circ = 2*Math.PI*R;
+    const offset = circ*(1-pctNum/100);
+    wrap.innerHTML = `
+      <div class="stat-ring">
+        <svg viewBox="0 0 56 56">
+          <circle class="bg" cx="28" cy="28" r="${R}"></circle>
+          <circle class="fg" cx="28" cy="28" r="${R}" stroke="${color}" stroke-dasharray="${circ}" stroke-dashoffset="${circ}" data-offset="${offset}"></circle>
+        </svg>
+        <div class="ring-txt">${Math.round(pctNum)}%</div>
+      </div>
+      <div class="stat-body">
+        <div class="stat-value" style="color:${color};"><span class="num" data-raw="${r.value}">0</span></div>
+        <div class="stat-label">${r.label}</div>
+      </div>
+    `;
+    return wrap;
+  }
+  wrap.className = 'stat-card';
   wrap.innerHTML = `
     <div class="stat-value" style="color:${color};"><span class="num" data-raw="${r.value}">0</span></div>
     <div class="stat-label">${r.label}</div>
-    ${isPct ? `<div class="stat-progress"><i data-pct="${pctNum}"></i></div>` : ''}
   `;
   return wrap;
 }
 
-/* ============ GENERIC DATA TABLE ============ */
+/* ============ COLOR LEGEND ============ */
+function renderLegend(){
+  const div = document.createElement('div');
+  div.className = 'dt-legend';
+  div.innerHTML = `
+    <b>Table colors:</b>
+    <span class="lg-item"><span class="lg-swatch good"></span>Strong performance</span>
+    <span class="lg-item"><span class="lg-swatch warn"></span>Moderate — watch</span>
+    <span class="lg-item"><span class="lg-swatch bad"></span>Needs focus</span>
+  `;
+  return div;
+}
+function tablesHaveTone(tables){
+  return tables.some(t=> t.rows.some(r=> r._tone && Object.keys(r._tone).length));
+}
+
+/* ============ GENERIC DATA TABLE (collapsible) ============ */
 /* table = {title, note, columns:[{key,label,align}], rows:[{...vals, _emph, _total, _indent, _tone:{key:'good'|'warn'|'bad'}}]} */
-function renderDataTable(table, color){
+let dtCounter = 0;
+function renderDataTable(table, color, openByDefault){
+  const uid = 'dt' + (dtCounter++);
   const wrap = document.createElement('div');
   wrap.className = 'dt-wrap';
+  wrap.id = uid;
+  wrap.dataset.navLabel = table.title;
+  wrap.style.setProperty('--sc', color);
   const theadCols = table.columns.map(c=>`<th style="${c.align==='right'?'text-align:right;':''}">${c.label}</th>`).join('');
   const rows = table.rows.map(r=>{
     const cls = ['dt-row'];
@@ -1289,18 +1536,41 @@ function renderDataTable(table, color){
     }).join('');
     return `<tr class="${cls.join(' ')}">${cells}</tr>`;
   }).join('');
+  const bodyId = uid + '-body';
   wrap.innerHTML = `
-    <div class="dt-head"><b>${table.title}</b>${table.note ? `<span class="dt-note">${table.note}</span>` : ''}</div>
-    <div class="dt-scroll"><table class="dt"><thead><tr>${theadCols}</tr></thead><tbody>${rows}</tbody></table></div>
+    <button class="dt-head" type="button" aria-expanded="false" aria-controls="${bodyId}">
+      <div class="dt-head-txt"><b>${table.title}</b>${table.note ? `<span class="dt-note">${table.note}</span>` : ''}</div>
+      <span class="dt-chev-wrap"><span class="dt-chev-lbl">Show table</span><span class="dt-chev">${ICONS.chevron}</span></span>
+    </button>
+    <div class="dt-body-wrap" id="${bodyId}">
+      <div class="dt-body-inner">
+        <div class="dt-scroll"><table class="dt"><thead><tr>${theadCols}</tr></thead><tbody>${rows}</tbody></table></div>
+      </div>
+    </div>
   `;
+  const btn = wrap.querySelector('.dt-head');
+  const bodyWrap = wrap.querySelector('.dt-body-wrap');
+  const chev = wrap.querySelector('.dt-chev');
+  const lbl = wrap.querySelector('.dt-chev-lbl');
+  function setOpen(open){
+    bodyWrap.classList.toggle('open', open);
+    chev.classList.toggle('open', open);
+    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    lbl.textContent = open ? 'Hide table' : 'Show table';
+  }
+  btn.addEventListener('click', ()=> setOpen(!bodyWrap.classList.contains('open')));
+  if(openByDefault) setOpen(true);
   return wrap;
 }
 
 /* ============ GENERIC BAR CHART ============ */
 /* chart = {title, note, unit, series:[{label, value, mom}]} single-series monthly bar chart */
+let chartCounter = 0;
 function renderBarChart(chart, color){
   const wrap = document.createElement('div');
   wrap.className = 'chart-wrap';
+  wrap.id = 'cht' + (chartCounter++);
+  wrap.dataset.navLabel = chart.title;
   const max = Math.max(...chart.series.map(s=>s.value), 1);
   const bars = chart.series.map(s=>{
     const h = Math.max(4, (s.value/max)*130);
@@ -1332,29 +1602,51 @@ let currentId = null, currentSub = 0;
 function renderSubContent(item, subIndex){
   const host = document.getElementById('subHost');
   if(!host) return;
+  dtCounter = 0; chartCounter = 0;
   if(item.items){
-    host.innerHTML = `<ul class="challenge-list">${item.items.map((t,i)=>`
-      <li class="challenge-item" style="--sc:${item.color};"><span class="num">${i+1}</span><span>${t}</span></li>`).join('')}</ul>
-      <div id="chalTables"></div>`;
+    host.innerHTML = `<div id="blk-challenges" data-nav-label="Key Challenges"><ul class="challenge-list">${item.items.map((t,i)=>`
+      <li class="challenge-item" style="--sc:${item.color};"><span class="num">${i+1}</span><span>${t}</span></li>`).join('')}</ul></div>
+      <div id="chalTables"></div>
+      <div id="chalQuestions" data-nav-label="Open Questions"></div>`;
     if(item.tables){
       const host2 = document.getElementById('chalTables');
       host2.style.marginTop = '30px';
+      if(tablesHaveTone(item.tables)) host2.appendChild(renderLegend());
       item.tables.forEach(t=> host2.appendChild(renderDataTable(t, item.color)));
     }
+    if(item.questions){
+      const host3 = document.getElementById('chalQuestions');
+      const q = item.questions;
+      const qi = document.createElement('div');
+      qi.className = 'q-block';
+      qi.style.setProperty('--sc', item.color);
+      qi.innerHTML = `
+        <div class="q-title" style="color:${item.color};">${ICONS.warn} ${q.title}</div>
+        ${q.sub ? `<div class="q-sub">${q.sub}</div>` : ''}
+        <div class="q-list">${q.gaps.map(g=>`<div class="q-item"><span class="qmark" style="background:${item.color};">?</span><span>${g}</span></div>`).join('')}</div>
+        ${q.openQuestion ? `<div class="q-open">Open question: ${q.openQuestion}</div>` : ''}
+      `;
+      host3.appendChild(qi);
+    }
+    buildMiniNav(item.color);
     return;
   }
   const sub = item.subs[subIndex];
   host.className = 'detail-fade';
   host.innerHTML = `
-    <div class="bg-callout" style="--sc:${item.color};">
+    <div class="bg-callout" id="blk-bg" data-nav-label="Background" style="--sc:${item.color};">
       <span class="tag">Background</span><br>${sub.background}
     </div>
-    <h3 class="block-title" style="--sc:${item.color};">${ICONS.check} Strategic Actions</h3>
-    <div class="actions-list">
-      ${sub.actions.map(a=>`<div class="action-item"><span class="chk" style="background:${item.color};">${ICONS.check}</span><span>${a}</span></div>`).join('')}
+    <div id="blk-actions" data-nav-label="Strategic Actions">
+      <h3 class="block-title" style="--sc:${item.color};">${ICONS.check} Strategic Actions</h3>
+      <div class="actions-list">
+        ${sub.actions.map(a=>`<div class="action-item"><span class="chk" style="background:${item.color};">${ICONS.check}</span><span>${a}</span></div>`).join('')}
+      </div>
     </div>
-    <h3 class="block-title" style="--sc:${item.color};">${ICONS.spark} Results</h3>
-    <div class="stats-grid" id="statsGrid"></div>
+    <div id="blk-results" data-nav-label="Results">
+      <h3 class="block-title" style="--sc:${item.color};">${ICONS.spark} Results</h3>
+      <div class="stats-grid" id="statsGrid"></div>
+    </div>
     ${(sub.charts||sub.tables) ? `<h3 class="block-title" style="--sc:${item.color};margin-top:36px;">${ICONS.target} Full Data Breakdown</h3>` : ''}
     <div id="chartsHost"></div>
     <div id="tablesHost"></div>
@@ -1366,11 +1658,10 @@ function renderSubContent(item, subIndex){
     statsGrid.appendChild(card);
   });
   statsGrid.querySelectorAll('.stat-value .num').forEach(n=> statObserver.observe(n));
-  statsGrid.querySelectorAll('.stat-progress i').forEach(bar=>{
-    bar.style.width='0%';
+  statsGrid.querySelectorAll('.stat-ring .fg').forEach(circle=>{
     new IntersectionObserver((entries, obs)=>{
-      entries.forEach(en=>{ if(en.isIntersecting){ requestAnimationFrame(()=> bar.style.width = bar.dataset.pct + '%'); obs.unobserve(en.target); } });
-    }, {threshold:.3}).observe(bar);
+      entries.forEach(en=>{ if(en.isIntersecting){ requestAnimationFrame(()=> circle.style.strokeDashoffset = circle.dataset.offset); obs.unobserve(en.target); } });
+    }, {threshold:.3}).observe(circle);
   });
   if(sub.charts){
     const chartsHost = document.getElementById('chartsHost');
@@ -1378,8 +1669,38 @@ function renderSubContent(item, subIndex){
   }
   if(sub.tables){
     const tablesHost = document.getElementById('tablesHost');
-    sub.tables.forEach(t=> tablesHost.appendChild(renderDataTable(t, item.color)));
+    if(tablesHaveTone(sub.tables)) tablesHost.appendChild(renderLegend());
+    sub.tables.forEach((t,i)=> tablesHost.appendChild(renderDataTable(t, item.color, i===0)));
   }
+  buildMiniNav(item.color);
+}
+
+/* ============ MINI NAV ============ */
+function buildMiniNav(color){
+  const nav = document.getElementById('miniNav');
+  nav.innerHTML = '';
+  nav.style.setProperty('--sc', color);
+  const items = [];
+  ['blk-bg','blk-actions','blk-results','blk-challenges','chalQuestions'].forEach(id=>{
+    const el = document.getElementById(id);
+    if(el && el.dataset.navLabel) items.push({id, label: el.dataset.navLabel});
+  });
+  document.querySelectorAll('#subHost .chart-wrap[data-nav-label], #subHost .dt-wrap[data-nav-label]').forEach(el=>{
+    items.push({id: el.id, label: el.dataset.navLabel});
+  });
+  if(items.length < 4){ nav.style.display = 'none'; return; }
+  nav.style.display = 'flex';
+  items.forEach(it=>{
+    const a = document.createElement('a');
+    a.href = '#'+it.id;
+    a.innerHTML = `<span class="mn-label">${it.label}</span>`;
+    a.addEventListener('click', (e)=>{
+      e.preventDefault();
+      const target = document.getElementById(it.id);
+      if(target) target.scrollIntoView({behavior:'smooth', block:'start'});
+    });
+    nav.appendChild(a);
+  });
 }
 
 function showDetail(id){
@@ -1452,9 +1773,17 @@ function showHub(){
   void viewHub.offsetWidth;
   viewHub.classList.add('active');
   rail.querySelectorAll('.rail-btn').forEach(b=> b.classList.remove('active'));
+  document.getElementById('miniNav').style.display = 'none';
   window.scrollTo({top:0, behavior:'smooth'});
 }
 document.getElementById('homeBtn').addEventListener('click', showHub);
+
+/* ============ BACK TO TOP ============ */
+const backToTop = document.getElementById('backToTop');
+window.addEventListener('scroll', ()=>{
+  backToTop.classList.toggle('show', window.scrollY > 400);
+});
+backToTop.addEventListener('click', ()=> window.scrollTo({top:0, behavior:'smooth'}));
 
 /* ============ SPLASH CURTAIN ============ */
 const splash = document.getElementById('splash');
