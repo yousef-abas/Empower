@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sellers Distribution Console | Empower</title>
+<title>DL Dashboard | Empower</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet">
@@ -130,6 +130,18 @@ body{
 .rail-foot{font-size:8.5px;color:rgba(255,255,255,.28);text-align:center;line-height:1.5;font-weight:700; letter-spacing:.3px;}
 
 main{flex:1; min-width:0; padding:20px 28px 48px;}
+
+.brandbar{
+  display:flex; align-items:center; gap:12px; padding-bottom:14px; margin-bottom:16px;
+  border-bottom:1px solid var(--line);
+}
+.brandbar-mark{
+  width:34px;height:34px;border-radius:var(--radius-sm); background:var(--signal); flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+}
+.brandbar-mark svg{width:18px;height:18px;}
+.brandbar-text h1{margin:0; font-size:16.5px; font-weight:800; letter-spacing:-.2px; color:var(--ink);}
+.brandbar-text p{margin:2px 0 0; font-size:12px; color:var(--ink-faint); font-weight:500; max-width:640px; line-height:1.4;}
 
 .topbar{ display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:18px; flex-wrap:wrap; }
 .topbar h2{font-size:19px; font-weight:800; margin:0; letter-spacing:-.2px;}
@@ -418,6 +430,15 @@ td.mono{font-family:var(--mono); color:var(--ink-soft); font-size:11.5px;}
   </nav>
 
   <main>
+    <div class="brandbar">
+      <div class="brandbar-mark">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 9h1m4 0h1m-6 4h1m4 0h1m-6 4h1m4 0h1"/></svg>
+      </div>
+      <div class="brandbar-text">
+        <h1>DL Dashboard</h1>
+        <p>A live console mapping every marketplace seller to their account manager — search, filter, and audit portfolio ownership across Empower Egypt.</p>
+      </div>
+    </div>
     <div class="topbar">
       <div>
         <h2 id="pageTitle">Overview</h2>
