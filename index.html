@@ -135,6 +135,32 @@ tbody tr{cursor:pointer}tbody tr:hover{background:#f5f9fb}
 .mt{background:#e9eef3;border-radius:8px;padding:4px 11px;font-size:.78rem;color:#4a5568}
 .ins{list-style:none}.ins li{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--line);font-size:.9rem;line-height:1.5}.ins li:last-child{border:none}
 .ins i{flex-shrink:0;width:9px;height:9px;border-radius:50%;margin-top:8px}
+.rsk{display:inline-block;min-width:30px;text-align:center;border-radius:7px;padding:2px 8px;font-size:.74rem;font-weight:800}
+.rsk.low,.rg.low{background:#e7f6ef;color:#17935a}.rsk.med,.rg.med{background:#fff4dc;color:#b7791f}.rsk.high,.rg.high{background:#ffe3e8;color:#d6284a}
+.rg{border-radius:14px;padding:10px 18px;text-align:center;min-width:112px}
+.rg b{display:block;font-size:1.8rem;font-weight:800;line-height:1.1}.rg small{font-size:.74rem;font-weight:700}
+.pf{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:18px}
+.pf input{border:1px solid var(--line);border-radius:9px;padding:7px 10px;font-family:inherit;background:transparent;color:var(--ink)}
+.btn{color:var(--ink)}.btn.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--navy);color:#fff;padding:10px 20px;border-radius:10px;font-weight:700;font-size:.86rem;z-index:100;opacity:0;pointer-events:none;transition:opacity .25s}
+#toast.on{opacity:1}
+[data-theme=dark]{--bg:#0a1220;--ink:#e6ecf5;--mut:#8b9bb4;--line:#20304a;color-scheme:dark}
+[data-theme=dark] .card,[data-theme=dark] .kpi,[data-theme=dark] #peek,[data-theme=dark] #alerts,[data-theme=dark] #sug,[data-theme=dark] .sr,[data-theme=dark] .btn,[data-theme=dark] #peek .x{background:#121f36;color:var(--ink)}
+[data-theme=dark] .btn.on{background:#2f7bd6;border-color:#2f7bd6;color:#fff}
+[data-theme=dark] .top{background:rgba(14,24,42,.92)}
+[data-theme=dark] th{background:#0f1a2e}
+[data-theme=dark] .cp,[data-theme=dark] .mt{background:#1a2a45;color:#b9c5d8}
+[data-theme=dark] .sr kbd{background:#0f1a2e;border-color:var(--line)}
+[data-theme=dark] .sr input,[data-theme=dark] .sg{color:var(--ink)}
+[data-theme=dark] .ic{color:#b9c5d8}[data-theme=dark] .ic:hover{background:#1a2a45}
+[data-theme=dark] tbody tr:hover,[data-theme=dark] .sg:hover,[data-theme=dark] .rk[data-m]:hover{background:#18284a}
+[data-theme=dark] .rk .bg{background:#1d2b45}
+[data-theme=dark] .al{background:#121f36}[data-theme=dark] .al.d{background:#2a1520;border-color:#5a2433}[data-theme=dark] .al.w{background:#2b2312;border-color:#5a4720}[data-theme=dark] .al.g{background:#112a20;border-color:#235a40}
+[data-theme=dark] .st,[data-theme=dark] .rsk.low,[data-theme=dark] .rg.low{background:#12362a}
+[data-theme=dark] .tag,[data-theme=dark] .rsk.high,[data-theme=dark] .rg.high{background:#3a1822}
+[data-theme=dark] .rsk.med,[data-theme=dark] .rg.med{background:#3a2e12}
+[data-theme=dark] .pav,[data-theme=dark] .chip span{background:#2f7bd6}
+[data-theme=dark] .th input,[data-theme=dark] .pf input{background:#0f1a2e;border-color:var(--line)}
 @media(max-width:1100px){.kpis,.hg,.g3{grid-template-columns:1fr 1fr}.g2{grid-template-columns:1fr}}
 @media(max-width:760px){.side{display:none}.kpis,.hg,.g3{grid-template-columns:1fr}}
 </style>
@@ -168,6 +194,7 @@ tbody tr{cursor:pointer}tbody tr:hover{background:#f5f9fb}
     <h1 id="title">Dashboard</h1>
     <div class="sr"><span data-i="search"></span><input id="gs" autocomplete="off" placeholder="Search merchant name or ID, ASIN, order…"><kbd>ctrl K</kbd><div id="sug"></div></div>
     <div class="tr">
+      <div class="ic" title="Dark mode" onclick="toggleTheme()" data-i="moon"></div>
       <div class="ic" title="Refresh" onclick="location.reload()" data-i="zap"></div>
       <div class="ic" title="Smart alerts" onclick="toggleAlerts()"><span data-i="bell"></span><span class="bdg" id="badge">0</span></div>
       <div class="chip"><span>YA</span>Youssef</div>
@@ -225,7 +252,7 @@ tbody tr{cursor:pointer}tbody tr:hover{background:#f5f9fb}
 
     <div class="sec" id="s-profile"><div id="prof"></div></div>
     <div class="sec" id="s-asin"><div class="ph"><h2>ASIN analysis</h2><button class="btn" onclick="go('dashboard')">Back</button></div><div class="card"><div class="ch"><h3>Top 20 ASINs by total value</h3></div><div id="fullA"></div></div></div>
-    <div class="sec" id="s-merchants"><div class="ph"><h2>Merchant rankings</h2><button class="btn" onclick="go('dashboard')">Back</button></div><div class="card"><div class="ch"><h3>Top 20 merchants by total value</h3></div><div id="fullM"></div></div></div>
+    <div class="sec" id="s-merchants"><div class="ph"><h2>Merchant rankings</h2><button class="btn" onclick="go('dashboard')">Back</button></div><div class="card"><div class="ch"><h3>Top 20 merchants</h3><div style="display:flex;gap:8px"><button class="btn on" id="ms1" onclick="setMS('val')">By value</button><button class="btn" id="ms2" onclick="setMS('risk')">By risk score</button></div></div><div id="fullM"></div></div></div>
     <div class="sec" id="s-issues"><div class="ph"><h2>Issues &amp; ROAD</h2><button class="btn" onclick="go('dashboard')">Back</button></div>
       <div class="g3">
         <div class="card"><div class="ch"><h3>Root cause breakdown</h3></div><div class="cw"><canvas id="issueChart2"></canvas></div></div>
@@ -254,6 +281,7 @@ tbody tr{cursor:pointer}tbody tr:hover{background:#f5f9fb}
   <label>Date</label><div class="v" id="p-d"></div>
 </div>
 <div id="alerts"></div>
+<div id="toast"></div>
 
 <script>
 const SCRIPT_URL="https://script.google.com/macros/s/AKfycbyFAht24zvBJ4o0DddZyqFtaBrl3K06_R7bnagwxFM5VhuC70jIZKbxCQuk9UF5-qOU/exec";
@@ -262,7 +290,7 @@ const TH={merchant:5,asin:5000,spike:30};
 const COL=['#0c1f3a','#1aa6b7','#f5a524','#8b5cf6','#f43f5e','#10b981','#3b82f6','#ec4899'];
 const $=id=>document.getElementById(id);
 const titles={profile:'Merchant Profile',dashboard:'Dashboard',asin:'ASIN Analysis',merchants:'Merchants',issues:'Issues / ROAD',serial:'Serial Returners',logs:'Full Logs'};
-const P={grid:'<rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>',
+const P={moon:'<path d="M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z"/>',grid:'<rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>',
 box:'<path d="M21 16V8l-9-5-9 5v8l9 5 9-5z"/><path d="M3.3 7L12 12l8.7-5M12 22V12"/>',
 truck:'<path d="M1 3h14v13H1zM15 8h4l3 3v5h-7"/><circle cx="5.5" cy="18.5" r="2"/><circle cx="18.5" cy="18.5" r="2"/>',
 alert:'<path d="M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0zM12 9v4M12 17h.01"/>',
@@ -287,7 +315,7 @@ async function load(){
         road:String(i.road||i.Road||'N/A'),action:a};
     });
     $('mf').innerHTML='<option value="all">All merchants</option>'+[...new Set(all.map(x=>x.merchantName))].sort().map(n=>`<option>${esc(n)}</option>`).join('');
-    update();badge();
+    _rk=null;update();badge();
   }catch(e){console.error(e)}
 }
 function filtered(){const m=$('mf').value,s=$('sd').value,e=$('ed').value;return all.filter(x=>(m==='all'||x.merchantName===m)&&(!s||x.date>=s)&&(!e||x.date<=e))}
@@ -340,29 +368,31 @@ function movement(){
   const tk={color:'#8a94a6',font:{family:'Tajawal',size:11}};
   ch.time=new Chart(ctx,{type:'line',data:{labels:d.L,datasets:[
     {label:'Value (EGP)',data:d.V,borderColor:'#1aa6b7',backgroundColor:g,fill:true,tension:.4,borderWidth:2,pointRadius:0,pointHoverRadius:4,yAxisID:'y'},
-    {label:'Orders',data:d.C,borderColor:'#0c1f3a',tension:.4,borderWidth:2,pointRadius:0,pointHoverRadius:4,yAxisID:'y1'}]},
+    {label:'Orders',data:d.C,borderColor:COL[0],tension:.4,borderWidth:2,pointRadius:0,pointHoverRadius:4,yAxisID:'y1'}]},
     options:{maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{display:false}},
-      scales:{x:{grid:{display:false},ticks:{...tk,maxTicksLimit:8}},y:{grid:{color:'#eef1f6'},ticks:tk},y1:{position:'right',grid:{display:false},ticks:tk}}}});
+      scales:{x:{grid:{display:false},ticks:{...tk,maxTicksLimit:8}},y:{grid:{color:GC()},ticks:tk},y1:{position:'right',grid:{display:false},ticks:tk}}}});
 }
 function pies(id,key){
   const c={};fd.forEach(x=>c[x[key]]=(c[x[key]]||0)+1);
   if(ch[id])ch[id].destroy();const el=$(id);if(!el)return;
   const t=Object.values(c).reduce((a,b)=>a+b,0);
-  ch[id]=new Chart(el,{type:'doughnut',data:{labels:Object.keys(c),datasets:[{data:Object.values(c),backgroundColor:COL,borderColor:'#fff',borderWidth:2}]},
+  ch[id]=new Chart(el,{type:'doughnut',data:{labels:Object.keys(c),datasets:[{data:Object.values(c),backgroundColor:COL,borderColor:CB(),borderWidth:2}]},
     options:{maintainAspectRatio:false,cutout:'62%',plugins:{legend:{position:'bottom',labels:{usePointStyle:true,boxWidth:8,font:{family:'Tajawal',size:12}}},
       tooltip:{callbacks:{label:x=>` ${x.label}: ${x.raw} (${(x.raw/t*100).toFixed(1)}%)`}}}}});
 }
 function rank(rows,unit,idKey){
-  const mx=rows[0]?.[1].v||1;
+  const mx=Math.max(...rows.map(r=>r[1].v),1);
   return rows.map(([n,o],i)=>`<div class="rk"${idKey?` data-m="${esc(n)}"`:''}><div class="n">${i+1}</div><div class="nm">${esc(n)}${idKey?`<small>${esc(o.id)}</small>`:''}</div>
     <div class="bg"><div style="width:${(o.v/mx*100).toFixed(0)}%;background:${COL[i%COL.length]}"></div></div>
-    <div class="ct">${o.c} ${unit}</div><div class="vl">${fmt(o.v)}</div></div>`).join('')||'<div style="color:var(--mut)">No data</div>';
+    <div class="ct">${o.c} ${unit}</div>${idKey?rb(n):''}<div class="vl">${fmt(o.v)}</div></div>`).join('')||'<div style="color:var(--mut)">No data</div>';
 }
 const byVal=r=>r.sort((a,b)=>b[1].v-a[1].v);
-function serRows(lim){return agg(fd,'merchantName').sort((a,b)=>b[1].c-a[1].c).slice(0,lim||999).map(([n,o])=>`<div class="rk" data-m="${esc(n)}"><div class="nm">${esc(n)}</div><span class="tag">${o.c} returns</span></div>`).join('')}
+function serRows(lim){return agg(fd,'merchantName').sort((a,b)=>b[1].c-a[1].c).slice(0,lim||999).map(([n,o])=>`<div class="rk" data-m="${esc(n)}"><div class="nm">${esc(n)}</div>${rb(n)}<span class="tag">${o.c} returns</span></div>`).join('')}
 function fullS(){$('fullS').innerHTML=serRows()}
 function fullA(){$('fullA').innerHTML=rank(byVal(agg(fd,'asin')).slice(0,20),'orders')}
-function fullM(){$('fullM').innerHTML=rank(byVal(agg(fd,'merchantName')).slice(0,20),'returns',1)}
+let mSort='val';
+function setMS(v){mSort=v;$('ms1').className='btn'+(v==='val'?' on':'');$('ms2').className='btn'+(v==='risk'?' on':'');fullM()}
+function fullM(){const r=agg(fd,'merchantName');if(mSort==='risk')r.sort((a,b)=>(risks()[b[0]]?.s||0)-(risks()[a[0]]?.s||0));else byVal(r);$('fullM').innerHTML=rank(r.slice(0,20),'returns',1)}
 function row(x,full){
   const i=all.indexOf(x);
   return `<tr onclick="openPeek(${i})"><td class="mono">${x.date}</td><td>${esc(x.orderId)}</td><td class="mono asin">${esc(x.asin)}</td><td>${esc(x.merchantName)}</td>
@@ -377,9 +407,9 @@ function issues(){
   $('issueCounts').innerHTML=Object.entries(c).sort((a,b)=>b[1]-a[1]).map(([n,v])=>`<div class="rk"><div class="nm">${esc(n)}</div><span class="tag">${v}</span></div>`).join('');
   const yr=new Date().getFullYear(),m=monthly(fd,yr),M=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   if(ch.mo)ch.mo.destroy();
-  ch.mo=new Chart($('moChart'),{type:'bar',data:{labels:M,datasets:[{data:m.c,backgroundColor:'#0c1f3a',borderRadius:6}]},
+  ch.mo=new Chart($('moChart'),{type:'bar',data:{labels:M,datasets:[{data:m.c,backgroundColor:COL[0],borderRadius:6}]},
     options:{maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>[` Orders: ${c.parsed.y}`,` Value: ${m.v[c.dataIndex].toLocaleString()} EGP`]}}},
-      scales:{x:{grid:{display:false}},y:{grid:{color:'#eef1f6'}}}}});
+      scales:{x:{grid:{display:false}},y:{grid:{color:GC()}}}}});
   const mx=Math.max(...m.c,1);
   $('moList').innerHTML=M.map((n,i)=>m.c[i]?`<div class="rk"><div class="n" style="width:32px">${n}</div><div style="flex:1"><div style="display:flex;justify-content:space-between;font-size:.84rem;margin-bottom:4px"><b>${m.c[i]} orders</b><span style="color:${COL[i%8]};font-weight:700">${m.v[i].toLocaleString()} EGP</span></div>
     <div class="bg" style="max-width:none"><div style="width:${m.c[i]/mx*100}%;background:${COL[i%8]}"></div></div></div></div>`:'').join('');
@@ -424,7 +454,7 @@ function sugList(s){
 function showSug(){
   sgs=sugList(q);const el=$('sug');
   if(!sgs.length){el.style.display='none';return}
-  el.innerHTML=sgs.map(([n,o],i)=>`<div class="sg" onclick="openMerchant(sgs[${i}][0])"><div><b>${esc(n)}</b><small>${esc(o.id)}</small></div><span>${o.c} returns · ${fmt(o.v)} EGP</span></div>`).join('');
+  el.innerHTML=sgs.map(([n,o],i)=>`<div class="sg" onclick="openMerchant(sgs[${i}][0])"><div><b>${esc(n)}</b><small>${esc(o.id)}</small></div><span>${rb(n)} ${o.c} returns · ${fmt(o.v)} EGP</span></div>`).join('');
   el.style.display='block';
 }
 document.addEventListener('click',e=>{
@@ -432,54 +462,108 @@ document.addEventListener('click',e=>{
   if(!e.target.closest('.sr'))$('sug').style.display='none';
 });
 function openMerchant(name){
-  curM=name;closePeek();$('sug').style.display='none';$('gs').blur();go('profile');
+  curM=name;pf={from:'',to:''};closePeek();$('sug').style.display='none';$('gs').blur();go('profile');
 }
 function cnt(d,k){const o={};d.forEach(x=>o[x[k]]=(o[x[k]]||0)+1);return Object.entries(o).sort((a,b)=>b[1]-a[1])}
 function donut(id,rows){
   if(ch[id])ch[id].destroy();const t=rows.reduce((a,r)=>a+r[1],0);
-  ch[id]=new Chart($(id),{type:'doughnut',data:{labels:rows.map(r=>r[0]),datasets:[{data:rows.map(r=>r[1]),backgroundColor:COL,borderColor:'#fff',borderWidth:2}]},
+  ch[id]=new Chart($(id),{type:'doughnut',data:{labels:rows.map(r=>r[0]),datasets:[{data:rows.map(r=>r[1]),backgroundColor:COL,borderColor:CB(),borderWidth:2}]},
     options:{maintainAspectRatio:false,cutout:'62%',plugins:{legend:{position:'bottom',labels:{usePointStyle:true,boxWidth:8,font:{family:'Tajawal',size:12}}},
       tooltip:{callbacks:{label:x=>` ${x.label}: ${x.raw} (${(x.raw/t*100).toFixed(1)}%)`}}}}});
 }
+let pf={from:'',to:''},_rk=null,lastReport='';
+function risks(){
+  if(_rk)return _rk;
+  const m={};
+  all.forEach(x=>{const o=m[x.merchantName]=m[x.merchantName]||{c:0,v:0,a:0,b:0};o.c++;o.v+=x.price;
+    const g=(Date.now()-new Date(x.date+'T00:00:00'))/864e5;if(g<=30)o.a++;else if(g<=60)o.b++});
+  const ks=Object.keys(m),M=ks.length,cs=ks.map(k=>m[k].c),vs=ks.map(k=>m[k].v);
+  const pr=(arr,x)=>M>1?arr.filter(y=>y<x).length/(M-1):0;
+  ks.forEach(k=>{const o=m[k];o.f=Math.round(pr(cs,o.c)*40);o.vs=Math.round(pr(vs,o.v)*30);
+    let mo=o.a>0?10:0;if(o.a>o.b)mo+=Math.min(20,(o.a-o.b)/Math.max(o.b,3)*20);o.m=Math.round(mo);
+    o.s=o.f+o.vs+o.m;o.l=o.s>=65?'high':o.s>=35?'med':'low'});
+  return _rk=m;
+}
+function rb(n){const o=risks()[n];return o?`<span class="rsk ${o.l}" title="Risk score">${o.s}</span>`:''}
+function setRange(k){
+  const t=new Date();let f='';
+  if(k==='30'||k==='90'){t.setDate(t.getDate()-(+k));f=t.toLocaleDateString('en-CA')}
+  else if(k==='ytd')f=t.getFullYear()+'-01-01';
+  pf={from:f,to:''};profile();
+}
+function exportM(){exportCSV(all.filter(x=>x.merchantName===curM&&(!pf.from||x.date>=pf.from)&&(!pf.to||x.date<=pf.to)))}
+function toast(m){const t=$('toast');t.textContent=m;t.classList.add('on');setTimeout(()=>t.classList.remove('on'),1800)}
+function copyReport(){
+  const ok=()=>toast('Report copied');
+  const fb=()=>{const t=document.createElement('textarea');t.value=lastReport;document.body.appendChild(t);t.select();document.execCommand('copy');t.remove();ok()};
+  if(navigator.clipboard)navigator.clipboard.writeText(lastReport).then(ok,fb);else fb();
+}
+function GC(){return document.documentElement.dataset.theme==='dark'?'#1f2d45':'#eef1f6'}
+function CB(){return document.documentElement.dataset.theme==='dark'?'#121f36':'#fff'}
+function applyTheme(t){
+  document.documentElement.dataset.theme=t;COL[0]=t==='dark'?'#6b8fc9':'#0c1f3a';
+  Chart.defaults.color=t==='dark'?'#b9c5d8':'#666';
+  try{localStorage.setItem('rmp-theme',t)}catch(e){}
+}
+function toggleTheme(){applyTheme(document.documentElement.dataset.theme==='dark'?'light':'dark');update()}
 function profile(){
-  const el=$('prof'),d=all.filter(x=>x.merchantName===curM);
-  if(!d.length){el.innerHTML='<div class="card">No data for this merchant.</div>';return}
-  const pc=(a,b)=>b?Math.round(a/b*100):0;
-  const n=d.length,tot=d.reduce((s,x)=>s+x.price,0),gT=all.reduce((s,x)=>s+x.price,0);
-  const ids=[...new Set(d.map(x=>x.merchantId))].join(', ');
-  const dates=d.map(x=>x.date).sort(),first=dates[0],last=dates[n-1],days=new Set(dates).size;
+  const el=$('prof'),dF=all.filter(x=>x.merchantName===curM);
+  if(!dF.length){el.innerHTML='<div class="card">No data for this merchant.</div>';return}
+  const inR=x=>(!pf.from||x.date>=pf.from)&&(!pf.to||x.date<=pf.to);
+  const d=dF.filter(inR),base=all.filter(inR),n=d.length;
+  const rk=risks()[curM],pc=(a,b)=>b?Math.round(a/b*100):0;
+  const lv={low:'Low',med:'Medium',high:'High'}[rk.l];
+  const ids=[...new Set(dF.map(x=>x.merchantId))].join(', ');
+  const dts=dF.map(x=>x.date).sort(),first=dts[0],last=dts[dts.length-1];
+  const per=(pf.from||pf.to)?`${pf.from||'start'} → ${pf.to||'today'}`:'All time';
+  const age=x=>(Date.now()-new Date(x.date+'T00:00:00'))/864e5;
+  const l30=dF.filter(x=>age(x)<=30).length,p30=dF.filter(x=>age(x)>30&&age(x)<=60).length;
+  const dl=p30?Math.round((l30-p30)/p30*100):null;
+  const head=`<div class="prof-h">
+    <div class="pav">${esc(curM.trim().charAt(0).toUpperCase())}</div>
+    <div style="flex:1;min-width:220px"><h2>${esc(curM)}</h2>
+      <div class="meta"><span class="mt">ID: ${esc(ids)}</span><span class="mt">First return: ${first}</span><span class="mt">Last return: ${last}</span><span class="mt">Period: ${per}</span></div></div>
+    <div class="rg ${rk.l}" title="Frequency ${rk.f}/40 · Value ${rk.vs}/30 · Momentum ${rk.m}/30 (based on full history)"><b>${rk.s}</b><small>Risk score · ${lv}</small></div>
+    <button class="btn" onclick="copyReport()">Copy report</button>
+    <button class="btn" onclick="exportM()">Export CSV</button>
+    <button class="btn" onclick="go('dashboard')">Back</button></div>
+    <div class="pf"><span style="color:var(--mut);font-size:.84rem">Period</span>
+      <input type="date" value="${pf.from}" onchange="pf.from=this.value;profile()"><span>→</span><input type="date" value="${pf.to}" onchange="pf.to=this.value;profile()">
+      <button class="btn" onclick="setRange('30')">30 days</button><button class="btn" onclick="setRange('90')">90 days</button><button class="btn" onclick="setRange('ytd')">This year</button><button class="btn" onclick="setRange('all')">All time</button></div>`;
+  if(!n){lastReport='';el.innerHTML=head+'<div class="card">No returns for this merchant in the selected period.</div>';return}
+  const tot=d.reduce((s,x)=>s+x.price,0),gT=base.reduce((s,x)=>s+x.price,0),days=new Set(d.map(x=>x.date)).size;
   const am={};
   d.forEach(x=>{const o=am[x.asin]=am[x.asin]||{v:0,c:0,last:'',is:{}};o.v+=x.price;o.c++;if(x.date>o.last)o.last=x.date;o.is[x.issue]=(o.is[x.issue]||0)+1});
   const as=Object.entries(am).sort((a,b)=>b[1].v-a[1].v),rep=as.filter(([,o])=>o.c>1).length;
-  const mr=byVal(agg(all,'merchantName')),rv=mr.findIndex(r=>r[0]===curM)+1;
+  const mr=byVal(agg(base,'merchantName')),rv=mr.findIndex(r=>r[0]===curM)+1;
   const rc=mr.slice().sort((a,b)=>b[1].c-a[1].c).findIndex(r=>r[0]===curM)+1;
-  const age=x=>(Date.now()-new Date(x.date+'T00:00:00'))/864e5;
-  const l30=d.filter(x=>age(x)<=30).length,p30=d.filter(x=>age(x)>30&&age(x)<=60).length;
-  const dl=p30?Math.round((l30-p30)/p30*100):null;
   const iss=cnt(d,'issue'),rd=cnt(d,'road');
-  const mm={};d.forEach(x=>{const o=mm[x.date.slice(0,7)]=mm[x.date.slice(0,7)]||{v:0,c:0};o.v+=x.price;o.c++});
+  const mm={};d.forEach(x=>{const k=x.date.slice(0,7),o=mm[k]=mm[k]||{v:0,c:0};o.v+=x.price;o.c++});
   const ml=Object.keys(mm).sort(),peak=ml.reduce((a,k)=>mm[k].v>mm[a].v?k:a,ml[0]);
-  const big=d.reduce((a,x)=>x.price>a.price?x:a,d[0]);
-  const sh=gT?tot/gT*100:0;
+  const big=d.reduce((a,x)=>x.price>a.price?x:a,d[0]),sh=gT?tot/gT*100:0;
   const ins=[
-    [`<b>${esc(curM)}</b> accounts for <b>${sh.toFixed(1)}%</b> of all returns value (${fmt(tot)} of ${fmt(gT)} EGP) and ${(n/all.length*100).toFixed(1)}% of all return records. Ranked <b>#${rv}</b> by value and <b>#${rc}</b> by frequency out of ${mr.length} merchants.`,'#1aa6b7'],
+    [`<b>${esc(curM)}</b> accounts for <b>${sh.toFixed(1)}%</b> of all returns value in this period (${fmt(tot)} of ${fmt(gT)} EGP) and ${(n/base.length*100).toFixed(1)}% of all return records. Ranked <b>#${rv}</b> by value and <b>#${rc}</b> by frequency out of ${mr.length} merchants.`,'#1aa6b7'],
+    [`Risk score <b>${rk.s}/100 (${lv})</b>: frequency ${rk.f}/40, value ${rk.vs}/30, momentum ${rk.m}/30. It compares this merchant with all others over the full history.`,rk.l==='high'?'#f43f5e':rk.l==='med'?'#f5a524':'#10b981'],
     [`Main root cause is <b>${esc(iss[0][0])}</b>: ${iss[0][1]} returns (${pc(iss[0][1],n)}%).${iss[1]?` Second is <b>${esc(iss[1][0])}</b> (${iss[1][1]}).`:''}`,'#f5a524'],
     [dl===null?`${l30} returns in the last 30 days and none in the 30 days before.`:`Last 30 days: <b>${l30}</b> returns vs ${p30} in the previous 30 days (<b>${dl>0?'+':''}${dl}%</b>).`,dl>0?'#f43f5e':'#10b981'],
     [`Top ASIN <b class="mono">${esc(as[0][0])}</b> drives ${pc(as[0][1].v,tot)}% of this merchant's value. ${rep} of ${as.length} ASINs were returned more than once.`,'#8b5cf6'],
     [`Peak month is <b>${peak}</b> with ${fmt(mm[peak].v)} EGP across ${mm[peak].c} returns. Largest single return: <b>${big.price.toLocaleString()} EGP</b> (order ${esc(big.orderId)}, ${big.date}).`,'#0c1f3a']
   ];
-  const kp=(ic,col,l,v,s,vs)=>`<div class="kpi" style="min-height:130px"><div class="kt"><div></div><div class="ico" style="background:${col}">${svg(ic)}</div></div><div class="kl">${l}</div><div class="kv" style="${vs||''}">${v}</div><div class="ks">${s}</div></div>`;
+  const top=r=>r.slice(0,3).map(x=>`${x[0]} (${x[1]}, ${pc(x[1],n)}%)`).join(', ');
+  lastReport=[`Merchant: ${curM} (ID: ${ids})`,`Period: ${per}`,
+    `Returns: ${n} | Value: ${tot.toLocaleString()} EGP | Avg: ${Math.round(tot/n).toLocaleString()} EGP | Unique ASINs: ${as.length} (${rep} repeated)`,
+    `Share of total value: ${sh.toFixed(1)}% | Rank: #${rv} of ${mr.length} by value, #${rc} by frequency`,
+    `Risk score: ${rk.s}/100 (${lv}) - frequency ${rk.f}/40, value ${rk.vs}/30, momentum ${rk.m}/30`,
+    `Last 30 days: ${l30} returns vs ${p30} in the previous 30 days${dl===null?'':` (${dl>0?'+':''}${dl}%)`}`,
+    `Top root causes: ${top(iss)}`,`ROAD: ${top(rd)}`,
+    `Top ASINs: ${as.slice(0,3).map(([a,o])=>`${a} (${o.c} orders, ${o.v.toLocaleString()} EGP)`).join('; ')}`,
+    `Peak month: ${peak} (${mm[peak].v.toLocaleString()} EGP, ${mm[peak].c} returns)`,
+    `Largest return: ${big.price.toLocaleString()} EGP (order ${big.orderId}, ${big.date})`].join('\n');
+  const kp=(ic,col,l,v,sb,vs)=>`<div class="kpi" style="min-height:130px"><div class="kt"><div></div><div class="ico" style="background:${col}">${svg(ic)}</div></div><div class="kl">${l}</div><div class="kv" style="${vs||''}">${v}</div><div class="ks">${sb}</div></div>`;
   const rows=as.slice(0,100).map(([a,o])=>{const ti=Object.entries(o.is).sort((x,y)=>y[1]-x[1])[0][0];
     return `<tr><td class="mono asin">${esc(a)}</td><td>${o.c}</td><td class="price" style="text-align:left">${o.v.toLocaleString()}</td><td>${pc(o.v,tot)}%</td><td>${Math.round(o.v/o.c).toLocaleString()}</td><td class="mono">${o.last}</td><td style="color:#b7791f">${esc(ti)}</td></tr>`}).join('');
   const logs=d.slice().sort((a,b)=>b.date.localeCompare(a.date)).map(x=>row(x,1)).join('');
-  el.innerHTML=`
-  <div class="prof-h">
-    <div class="pav">${esc(curM.trim().charAt(0).toUpperCase())}</div>
-    <div style="flex:1;min-width:220px"><h2>${esc(curM)}</h2>
-      <div class="meta"><span class="mt">ID: ${esc(ids)}</span><span class="mt">First return: ${first}</span><span class="mt">Last return: ${last}</span><span class="mt">${days} active days</span></div></div>
-    <button class="btn" onclick="exportCSV(all.filter(x=>x.merchantName===curM))">Export CSV</button>
-    <button class="btn" onclick="go('dashboard')">Back</button>
-  </div>
+  el.innerHTML=head+`
   <div class="kpis">
     ${kp('cart','#1e3a5f','Total returns',n.toLocaleString(),days+' active days')}
     ${kp('wallet','var(--teal)','Total value',fmt(tot)+' EGP',tot.toLocaleString()+' EGP exact')}
@@ -514,9 +598,9 @@ function profile(){
   const tk={color:'#8a94a6',font:{family:'Tajawal',size:11}};
   ch.pm=new Chart(ctx,{type:'line',data:{labels:ml,datasets:[
     {label:'Value (EGP)',data:ml.map(k=>mm[k].v),borderColor:'#1aa6b7',backgroundColor:g,fill:true,tension:.35,borderWidth:2,pointRadius:3,yAxisID:'y'},
-    {label:'Orders',data:ml.map(k=>mm[k].c),borderColor:'#0c1f3a',tension:.35,borderWidth:2,pointRadius:3,yAxisID:'y1'}]},
+    {label:'Orders',data:ml.map(k=>mm[k].c),borderColor:COL[0],tension:.35,borderWidth:2,pointRadius:3,yAxisID:'y1'}]},
     options:{maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{position:'top',align:'end',labels:{usePointStyle:true,boxWidth:8,font:{family:'Tajawal',size:12}}}},
-      scales:{x:{grid:{display:false},ticks:tk},y:{grid:{color:'#eef1f6'},ticks:tk},y1:{position:'right',grid:{display:false},ticks:tk}}}});
+      scales:{x:{grid:{display:false},ticks:tk},y:{grid:{color:GC()},ticks:tk},y1:{position:'right',grid:{display:false},ticks:tk}}}});
   donut('pi1',iss);donut('pi2',rd);
 }
 
@@ -542,6 +626,8 @@ function buildAlerts(){
     (tv?`<div class="al"><b>This month so far</b><span>${tv.toLocaleString()} EGP from ${tc} returns</span></div>`:'');
 }
 function badge(){const n=alertList().out.filter(a=>a.t!=='g').length,b=$('badge');b.style.display=n?'grid':'none';b.textContent=n}
+let _t='light';try{_t=localStorage.getItem('rmp-theme')||'light'}catch(e){}
+applyTheme(_t);
 load();
 </script>
 </body>
