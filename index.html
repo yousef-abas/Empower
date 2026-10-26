@@ -123,6 +123,18 @@ tbody tr{cursor:pointer}tbody tr:hover{background:#f5f9fb}
 .al.d{background:#fff5f6;border-color:#ffd6dc}.al.w{background:#fffaf0;border-color:#fde7b5}.al.g{background:#f0fbf5;border-color:#c5ecd5}
 .th{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .th label{font-size:.7rem;color:var(--mut)}.th input{width:100%;border:1px solid var(--line);border-radius:7px;padding:5px;text-align:center;font-family:inherit}
+.sr{position:relative}
+#sug{position:absolute;top:48px;left:0;right:0;background:#fff;border-radius:12px;box-shadow:0 14px 36px rgba(12,31,58,.18);display:none;z-index:70;overflow:hidden}
+.sg{display:flex;justify-content:space-between;align-items:center;padding:11px 14px;cursor:pointer;gap:12px;color:var(--ink)}
+.sg:hover{background:#f3f7fa}.sg b{font-size:.92rem}.sg small{display:block;color:var(--mut);font-size:.72rem}.sg span{font-size:.76rem;color:var(--mut);white-space:nowrap}
+.rk[data-m]{cursor:pointer}.rk[data-m]:hover{background:#f7fafc}
+.prof-h{display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin-bottom:20px}
+.pav{width:66px;height:66px;border-radius:18px;background:var(--navy);color:#fff;display:grid;place-items:center;font-size:1.8rem;font-weight:800}
+.prof-h h2{font-size:1.45rem;font-weight:800}
+.meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.mt{background:#e9eef3;border-radius:8px;padding:4px 11px;font-size:.78rem;color:#4a5568}
+.ins{list-style:none}.ins li{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--line);font-size:.9rem;line-height:1.5}.ins li:last-child{border:none}
+.ins i{flex-shrink:0;width:9px;height:9px;border-radius:50%;margin-top:8px}
 @media(max-width:1100px){.kpis,.hg,.g3{grid-template-columns:1fr 1fr}.g2{grid-template-columns:1fr}}
 @media(max-width:760px){.side{display:none}.kpis,.hg,.g3{grid-template-columns:1fr}}
 </style>
@@ -154,7 +166,7 @@ tbody tr{cursor:pointer}tbody tr:hover{background:#f5f9fb}
 <div class="wrap">
   <header class="top">
     <h1 id="title">Dashboard</h1>
-    <div class="sr"><span data-i="search"></span><input id="gs" placeholder="Global search"><kbd>ctrl K</kbd></div>
+    <div class="sr"><span data-i="search"></span><input id="gs" autocomplete="off" placeholder="Search merchant name or ID, ASIN, order…"><kbd>ctrl K</kbd><div id="sug"></div></div>
     <div class="tr">
       <div class="ic" title="Refresh" onclick="location.reload()" data-i="zap"></div>
       <div class="ic" title="Smart alerts" onclick="toggleAlerts()"><span data-i="bell"></span><span class="bdg" id="badge">0</span></div>
@@ -211,6 +223,7 @@ tbody tr{cursor:pointer}tbody tr:hover{background:#f5f9fb}
       </div>
     </div>
 
+    <div class="sec" id="s-profile"><div id="prof"></div></div>
     <div class="sec" id="s-asin"><div class="ph"><h2>ASIN analysis</h2><button class="btn" onclick="go('dashboard')">Back</button></div><div class="card"><div class="ch"><h3>Top 20 ASINs by total value</h3></div><div id="fullA"></div></div></div>
     <div class="sec" id="s-merchants"><div class="ph"><h2>Merchant rankings</h2><button class="btn" onclick="go('dashboard')">Back</button></div><div class="card"><div class="ch"><h3>Top 20 merchants by total value</h3></div><div id="fullM"></div></div></div>
     <div class="sec" id="s-issues"><div class="ph"><h2>Issues &amp; ROAD</h2><button class="btn" onclick="go('dashboard')">Back</button></div>
@@ -235,7 +248,7 @@ tbody tr{cursor:pointer}tbody tr:hover{background:#f5f9fb}
   <label>Value (EGP)</label><div class="v" id="p-p" style="font-size:1.8rem"></div>
   <label>Issue / root cause</label><div class="v" id="p-i" style="color:var(--rose)"></div>
   <label>ROAD / status</label><div class="v" id="p-r"></div>
-  <label>Merchant</label><div class="v" id="p-m"></div>
+  <label>Merchant</label><div class="v" id="p-m" style="cursor:pointer;color:var(--teal);text-decoration:underline" title="Open merchant profile" onclick="openMerchant(this.textContent)"></div>
   <label>Merchant ID</label><div class="v mono" id="p-mid"></div>
   <label>Action taken</label><div class="v" id="p-ac"></div>
   <label>Date</label><div class="v" id="p-d"></div>
@@ -248,7 +261,7 @@ let all=[],fd=[],ch={},cur='dashboard',q='';
 const TH={merchant:5,asin:5000,spike:30};
 const COL=['#0c1f3a','#1aa6b7','#f5a524','#8b5cf6','#f43f5e','#10b981','#3b82f6','#ec4899'];
 const $=id=>document.getElementById(id);
-const titles={dashboard:'Dashboard',asin:'ASIN Analysis',merchants:'Merchants',issues:'Issues / ROAD',serial:'Serial Returners',logs:'Full Logs'};
+const titles={profile:'Merchant Profile',dashboard:'Dashboard',asin:'ASIN Analysis',merchants:'Merchants',issues:'Issues / ROAD',serial:'Serial Returners',logs:'Full Logs'};
 const P={grid:'<rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>',
 box:'<path d="M21 16V8l-9-5-9 5v8l9 5 9-5z"/><path d="M3.3 7L12 12l8.7-5M12 22V12"/>',
 truck:'<path d="M1 3h14v13H1zM15 8h4l3 3v5h-7"/><circle cx="5.5" cy="18.5" r="2"/><circle cx="18.5" cy="18.5" r="2"/>',
@@ -293,7 +306,7 @@ function match(x,s){s=s.toLowerCase();return !s||[x.orderId,x.asin,x.merchantNam
 function update(){
   fd=filtered();stats();movement();pies('issueChart','issue');pies('roadChart','road');
   $('topA').innerHTML=rank(byVal(agg(fd,'asin')).slice(0,5),'orders');$('serMini').innerHTML=serRows(5);recent();
-  if(cur==='asin')fullA();if(cur==='merchants')fullM();if(cur==='issues')issues();if(cur==='serial')fullS();if(cur==='logs')fullT();
+  if(cur==='asin')fullA();if(cur==='merchants')fullM();if(cur==='issues')issues();if(cur==='serial')fullS();if(cur==='logs')fullT();if(cur==='profile')profile();
 }
 function stats(){
   const n=new Date(),today=n.toLocaleDateString('en-CA'),yr=n.getFullYear(),mo=n.getMonth()+1,lm=mo===1?12:mo-1,ly=mo===1?yr-1:yr;
@@ -341,12 +354,12 @@ function pies(id,key){
 }
 function rank(rows,unit,idKey){
   const mx=rows[0]?.[1].v||1;
-  return rows.map(([n,o],i)=>`<div class="rk"><div class="n">${i+1}</div><div class="nm">${esc(n)}${idKey?`<small>${esc(o.id)}</small>`:''}</div>
+  return rows.map(([n,o],i)=>`<div class="rk"${idKey?` data-m="${esc(n)}"`:''}><div class="n">${i+1}</div><div class="nm">${esc(n)}${idKey?`<small>${esc(o.id)}</small>`:''}</div>
     <div class="bg"><div style="width:${(o.v/mx*100).toFixed(0)}%;background:${COL[i%COL.length]}"></div></div>
     <div class="ct">${o.c} ${unit}</div><div class="vl">${fmt(o.v)}</div></div>`).join('')||'<div style="color:var(--mut)">No data</div>';
 }
 const byVal=r=>r.sort((a,b)=>b[1].v-a[1].v);
-function serRows(lim){return agg(fd,'merchantName').sort((a,b)=>b[1].c-a[1].c).slice(0,lim||999).map(([n,o])=>`<div class="rk"><div class="nm">${esc(n)}</div><span class="tag">${o.c} returns</span></div>`).join('')}
+function serRows(lim){return agg(fd,'merchantName').sort((a,b)=>b[1].c-a[1].c).slice(0,lim||999).map(([n,o])=>`<div class="rk" data-m="${esc(n)}"><div class="nm">${esc(n)}</div><span class="tag">${o.c} returns</span></div>`).join('')}
 function fullS(){$('fullS').innerHTML=serRows()}
 function fullA(){$('fullA').innerHTML=rank(byVal(agg(fd,'asin')).slice(0,20),'orders')}
 function fullM(){$('fullM').innerHTML=rank(byVal(agg(fd,'merchantName')).slice(0,20),'returns',1)}
@@ -378,9 +391,11 @@ function go(s){
   $('title').textContent=titles[s];update();document.querySelector('.main').scrollTop=0;
 }
 document.querySelectorAll('.nav').forEach(e=>e.onclick=()=>go(e.dataset.s));
-$('gs').addEventListener('input',e=>{q=e.target.value;recent();if(cur==='logs')fullT()});
+$('gs').addEventListener('input',e=>{q=e.target.value;showSug();recent();if(cur==='logs')fullT()});
+$('gs').addEventListener('focus',showSug);
+$('gs').addEventListener('keydown',e=>{if(e.key==='Enter'){const l=sugList(q);if(l.length)openMerchant(l[0][0])}});
 ['mf','sd','ed'].forEach(id=>$(id).addEventListener('change',update));
-document.addEventListener('keydown',e=>{if(e.key==='Escape')closePeek();if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){e.preventDefault();$('gs').focus()}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closePeek();$('sug').style.display='none'}if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){e.preventDefault();$('gs').focus()}});
 
 function openPeek(i){
   const x=all[i];if(!x)return;
@@ -390,11 +405,119 @@ function openPeek(i){
   $('peek').classList.add('on');
 }
 function closePeek(){$('peek').classList.remove('on')}
-function exportCSV(){
+function exportCSV(list){list=list||fd;
   const f=s=>`"${String(s).replace(/"/g,'""')}"`;
   let c='Date,Order ID,ASIN,Price (EGP),Merchant ID,Merchant Name,Issue,Road,Action\n';
-  fd.forEach(e=>c+=[e.date,e.orderId,e.asin,e.price,e.merchantId,e.merchantName,e.issue,e.road,e.action].map(f).join(',')+'\n');
+  list.forEach(e=>c+=[e.date,e.orderId,e.asin,e.price,e.merchantId,e.merchantName,e.issue,e.road,e.action].map(f).join(',')+'\n');
   const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([c],{type:'text/csv'}));a.download='returns_master_pro.csv';a.click();
+}
+
+/* merchant deep search + profile */
+let sgs=[],curM=null;
+function svg(n){return `<svg class="i" viewBox="0 0 24 24">${P[n]}</svg>`}
+function sugList(s){
+  s=(s||'').trim().toLowerCase();if(!s)return[];
+  const m={};
+  all.forEach(x=>{if(x.merchantName.toLowerCase().includes(s)||x.merchantId.toLowerCase().includes(s)){const o=m[x.merchantName]=m[x.merchantName]||{v:0,c:0,id:x.merchantId};o.v+=x.price;o.c++}});
+  return Object.entries(m).sort((a,b)=>b[1].c-a[1].c).slice(0,6);
+}
+function showSug(){
+  sgs=sugList(q);const el=$('sug');
+  if(!sgs.length){el.style.display='none';return}
+  el.innerHTML=sgs.map(([n,o],i)=>`<div class="sg" onclick="openMerchant(sgs[${i}][0])"><div><b>${esc(n)}</b><small>${esc(o.id)}</small></div><span>${o.c} returns · ${fmt(o.v)} EGP</span></div>`).join('');
+  el.style.display='block';
+}
+document.addEventListener('click',e=>{
+  const t=e.target.closest('.rk[data-m]');if(t)openMerchant(t.dataset.m);
+  if(!e.target.closest('.sr'))$('sug').style.display='none';
+});
+function openMerchant(name){
+  curM=name;closePeek();$('sug').style.display='none';$('gs').blur();go('profile');
+}
+function cnt(d,k){const o={};d.forEach(x=>o[x[k]]=(o[x[k]]||0)+1);return Object.entries(o).sort((a,b)=>b[1]-a[1])}
+function donut(id,rows){
+  if(ch[id])ch[id].destroy();const t=rows.reduce((a,r)=>a+r[1],0);
+  ch[id]=new Chart($(id),{type:'doughnut',data:{labels:rows.map(r=>r[0]),datasets:[{data:rows.map(r=>r[1]),backgroundColor:COL,borderColor:'#fff',borderWidth:2}]},
+    options:{maintainAspectRatio:false,cutout:'62%',plugins:{legend:{position:'bottom',labels:{usePointStyle:true,boxWidth:8,font:{family:'Tajawal',size:12}}},
+      tooltip:{callbacks:{label:x=>` ${x.label}: ${x.raw} (${(x.raw/t*100).toFixed(1)}%)`}}}}});
+}
+function profile(){
+  const el=$('prof'),d=all.filter(x=>x.merchantName===curM);
+  if(!d.length){el.innerHTML='<div class="card">No data for this merchant.</div>';return}
+  const pc=(a,b)=>b?Math.round(a/b*100):0;
+  const n=d.length,tot=d.reduce((s,x)=>s+x.price,0),gT=all.reduce((s,x)=>s+x.price,0);
+  const ids=[...new Set(d.map(x=>x.merchantId))].join(', ');
+  const dates=d.map(x=>x.date).sort(),first=dates[0],last=dates[n-1],days=new Set(dates).size;
+  const am={};
+  d.forEach(x=>{const o=am[x.asin]=am[x.asin]||{v:0,c:0,last:'',is:{}};o.v+=x.price;o.c++;if(x.date>o.last)o.last=x.date;o.is[x.issue]=(o.is[x.issue]||0)+1});
+  const as=Object.entries(am).sort((a,b)=>b[1].v-a[1].v),rep=as.filter(([,o])=>o.c>1).length;
+  const mr=byVal(agg(all,'merchantName')),rv=mr.findIndex(r=>r[0]===curM)+1;
+  const rc=mr.slice().sort((a,b)=>b[1].c-a[1].c).findIndex(r=>r[0]===curM)+1;
+  const age=x=>(Date.now()-new Date(x.date+'T00:00:00'))/864e5;
+  const l30=d.filter(x=>age(x)<=30).length,p30=d.filter(x=>age(x)>30&&age(x)<=60).length;
+  const dl=p30?Math.round((l30-p30)/p30*100):null;
+  const iss=cnt(d,'issue'),rd=cnt(d,'road');
+  const mm={};d.forEach(x=>{const o=mm[x.date.slice(0,7)]=mm[x.date.slice(0,7)]||{v:0,c:0};o.v+=x.price;o.c++});
+  const ml=Object.keys(mm).sort(),peak=ml.reduce((a,k)=>mm[k].v>mm[a].v?k:a,ml[0]);
+  const big=d.reduce((a,x)=>x.price>a.price?x:a,d[0]);
+  const sh=gT?tot/gT*100:0;
+  const ins=[
+    [`<b>${esc(curM)}</b> accounts for <b>${sh.toFixed(1)}%</b> of all returns value (${fmt(tot)} of ${fmt(gT)} EGP) and ${(n/all.length*100).toFixed(1)}% of all return records. Ranked <b>#${rv}</b> by value and <b>#${rc}</b> by frequency out of ${mr.length} merchants.`,'#1aa6b7'],
+    [`Main root cause is <b>${esc(iss[0][0])}</b>: ${iss[0][1]} returns (${pc(iss[0][1],n)}%).${iss[1]?` Second is <b>${esc(iss[1][0])}</b> (${iss[1][1]}).`:''}`,'#f5a524'],
+    [dl===null?`${l30} returns in the last 30 days and none in the 30 days before.`:`Last 30 days: <b>${l30}</b> returns vs ${p30} in the previous 30 days (<b>${dl>0?'+':''}${dl}%</b>).`,dl>0?'#f43f5e':'#10b981'],
+    [`Top ASIN <b class="mono">${esc(as[0][0])}</b> drives ${pc(as[0][1].v,tot)}% of this merchant's value. ${rep} of ${as.length} ASINs were returned more than once.`,'#8b5cf6'],
+    [`Peak month is <b>${peak}</b> with ${fmt(mm[peak].v)} EGP across ${mm[peak].c} returns. Largest single return: <b>${big.price.toLocaleString()} EGP</b> (order ${esc(big.orderId)}, ${big.date}).`,'#0c1f3a']
+  ];
+  const kp=(ic,col,l,v,s,vs)=>`<div class="kpi" style="min-height:130px"><div class="kt"><div></div><div class="ico" style="background:${col}">${svg(ic)}</div></div><div class="kl">${l}</div><div class="kv" style="${vs||''}">${v}</div><div class="ks">${s}</div></div>`;
+  const rows=as.slice(0,100).map(([a,o])=>{const ti=Object.entries(o.is).sort((x,y)=>y[1]-x[1])[0][0];
+    return `<tr><td class="mono asin">${esc(a)}</td><td>${o.c}</td><td class="price" style="text-align:left">${o.v.toLocaleString()}</td><td>${pc(o.v,tot)}%</td><td>${Math.round(o.v/o.c).toLocaleString()}</td><td class="mono">${o.last}</td><td style="color:#b7791f">${esc(ti)}</td></tr>`}).join('');
+  const logs=d.slice().sort((a,b)=>b.date.localeCompare(a.date)).map(x=>row(x,1)).join('');
+  el.innerHTML=`
+  <div class="prof-h">
+    <div class="pav">${esc(curM.trim().charAt(0).toUpperCase())}</div>
+    <div style="flex:1;min-width:220px"><h2>${esc(curM)}</h2>
+      <div class="meta"><span class="mt">ID: ${esc(ids)}</span><span class="mt">First return: ${first}</span><span class="mt">Last return: ${last}</span><span class="mt">${days} active days</span></div></div>
+    <button class="btn" onclick="exportCSV(all.filter(x=>x.merchantName===curM))">Export CSV</button>
+    <button class="btn" onclick="go('dashboard')">Back</button>
+  </div>
+  <div class="kpis">
+    ${kp('cart','#1e3a5f','Total returns',n.toLocaleString(),days+' active days')}
+    ${kp('wallet','var(--teal)','Total value',fmt(tot)+' EGP',tot.toLocaleString()+' EGP exact')}
+    ${kp('box','var(--org)','Unique ASINs',as.length,rep+' returned more than once')}
+    ${kp('bag','var(--pur)','Average return value',fmt(tot/n)+' EGP','Largest: '+fmt(big.price)+' EGP')}
+  </div>
+  <div class="kpis">
+    ${kp('trend','#1e3a5f','Share of total value',sh.toFixed(1)+'%','of '+fmt(gT)+' EGP across all merchants')}
+    ${kp('users','var(--teal)','Rank','#'+rv,'by value · #'+rc+' by frequency')}
+    ${kp('alert','var(--org)','Last 30 days',l30,dl===null?'No returns in the 30 days before':(dl>0?'+':'')+dl+'% vs previous 30 days')}
+    ${kp('file','var(--pur)','Top root cause',esc(iss[0][0]),iss[0][1]+' returns ('+pc(iss[0][1],n)+'%)','font-size:1.3rem;line-height:1.3;margin-top:4px')}
+  </div>
+  <div class="g2">
+    <div class="card"><div class="ch"><div><h3>Monthly trend</h3><small>Return value and order count per month</small></div></div><div class="cw"><canvas id="pm"></canvas></div></div>
+    <div class="card"><div class="ch"><h3>Key insights</h3></div><ul class="ins">${ins.map(([t,c])=>`<li><i style="background:${c}"></i><span>${t}</span></li>`).join('')}</ul></div>
+  </div>
+  <div class="g3">
+    <div class="card"><div class="ch"><h3>Root causes</h3></div><div class="cw" style="height:230px"><canvas id="pi1"></canvas></div></div>
+    <div class="card"><div class="ch"><h3>ROAD</h3></div><div class="cw" style="height:230px"><canvas id="pi2"></canvas></div></div>
+    <div class="card"><div class="ch"><h3>Top ASINs by value</h3></div>${rank(as.slice(0,5),'orders')}</div>
+  </div>
+  <div class="card" style="padding:0;overflow:hidden;margin-bottom:20px">
+    <div class="ch" style="padding:20px 22px 0"><div><h3>ASIN breakdown</h3><small>${as.length} ASINs, sorted by value</small></div></div>
+    <div style="overflow-x:auto;max-height:420px"><table><thead><tr><th>ASIN</th><th>Orders</th><th style="text-align:left">Value (EGP)</th><th>Share</th><th>Avg value</th><th>Last return</th><th>Main issue</th></tr></thead><tbody>${rows}</tbody></table></div>
+  </div>
+  <div class="card" style="padding:0;overflow:hidden">
+    <div class="ch" style="padding:20px 22px 0"><div><h3>All returns</h3><small>${n} records, newest first. Click a row for details</small></div></div>
+    <div style="overflow-x:auto;max-height:520px"><table><thead><tr><th>Date</th><th>Order ID</th><th>ASIN</th><th>Merchant</th><th>Issue</th><th>ROAD</th><th style="text-align:right">Value (EGP)</th><th>Status</th></tr></thead><tbody>${logs}</tbody></table></div>
+  </div>`;
+  if(ch.pm)ch.pm.destroy();
+  const ctx=$('pm').getContext('2d'),g=ctx.createLinearGradient(0,0,0,230);g.addColorStop(0,'rgba(26,166,183,.28)');g.addColorStop(1,'rgba(26,166,183,0)');
+  const tk={color:'#8a94a6',font:{family:'Tajawal',size:11}};
+  ch.pm=new Chart(ctx,{type:'line',data:{labels:ml,datasets:[
+    {label:'Value (EGP)',data:ml.map(k=>mm[k].v),borderColor:'#1aa6b7',backgroundColor:g,fill:true,tension:.35,borderWidth:2,pointRadius:3,yAxisID:'y'},
+    {label:'Orders',data:ml.map(k=>mm[k].c),borderColor:'#0c1f3a',tension:.35,borderWidth:2,pointRadius:3,yAxisID:'y1'}]},
+    options:{maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{position:'top',align:'end',labels:{usePointStyle:true,boxWidth:8,font:{family:'Tajawal',size:12}}}},
+      scales:{x:{grid:{display:false},ticks:tk},y:{grid:{color:'#eef1f6'},ticks:tk},y1:{position:'right',grid:{display:false},ticks:tk}}}});
+  donut('pi1',iss);donut('pi2',rd);
 }
 
 /* smart alerts */
